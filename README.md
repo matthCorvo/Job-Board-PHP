@@ -121,3 +121,8 @@ job-board/
 
 
 # mise en place de la base de donnée 
+|-- config/
+|   |   |-- Database.php
+|   |
+
+  - création des test 
