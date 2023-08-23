@@ -1,0 +1,33 @@
+/******************************
+
+    00 - Home
+    01 - Inner Page
+        00 - About Us
+        01 - Blog Detail
+             Blog Classic
+             Sidebar Right
+             Blog Large
+		02 - Job List
+        03 - Job Details
+		04 - Candidate Single
+		05 - Post Job
+        06 - Contact Us
+        07 - Comment Form
+    
+******************************/
+
+/*----------------------------------------*/
+/*  00 - Home
+/*----------------------------------------*/
+
+.section-lg {
+    padding-top: 100px;
+    padding-bottom: 100px;
+    background-color: #edf0f58f;
+}
+
+
+a {
+    color: black;
+    text-decoration: none;
+}

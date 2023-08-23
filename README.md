@@ -8,12 +8,13 @@
 Le but de l’exercice est de créer une page de Job Board (offres d’emplois) avec un
 minimum de filtres et une pagination.
 Pour vous aider dans l’affichage, vous trouverez en annexe un mini « zoning » (un peu
-plus bas dans le document).
+plus bas dans le document).✔️
 Le plus simple - le front n’étant pas noté ici - est de vous aider d’un framework type
-Bootstrap (https://getbootstrap.com/) ou Materialize (https://materializecss.com/).
-L’intégralité de l’exercice sera basé sur PHP-MySQL.
+Bootstrap (https://getbootstrap.com/) ou Materialize (https://materializecss.com/).✔️
+L’intégralité de l’exercice sera basé sur PHP-MySQL.✔️
 En terme d’affichage il vous faudra lister les offres d’emplois avec pour chacune des
 offres :
+
 ● Date à laquelle l’offre a été publiée - L’affichage de la date doit être de la forme
 française (Ex: Vendredi 18 août 2023)
 ● Date de mise à jour de l’offre (non affichée, mais présente en base)
@@ -24,6 +25,7 @@ française (Ex: Vendredi 18 août 2023)
 ● Type de métier
 ● Nom de l’entreprise qui poste l’annonce
 ● Description de l’offre (affichage des 30 premiers caractères seulement)
+
 ⚠️Une image devra être affichée dans l’encart dédié à une offre. Pour cela, il vous
 faudra utiliser l’API (gratuite) suivante : https://some-random-api.ml/meme. L’api
 retourne un format JSON. À vous d’utiliser ce JSON pour afficher l’image.
@@ -61,6 +63,9 @@ Ajouter un tri sur la liste avec :
 ● Ordonner par date de publication ascendant / descendant
 ● Ordonner par ordre alphabétique ascendant / descendant
 
+<!-- TO DO -->
+● utiliser normalize et autre css - 
+
 # création de la base de donnée 
 CREATE TABLE IF NOT EXISTS `job_listings` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -73,7 +78,6 @@ CREATE TABLE IF NOT EXISTS `job_listings` (
   `description` text NOT NULL,
   `date_posted` date NOT NULL,
   `date_updated` date DEFAULT NULL,
-  `image_url` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `job_reference` (`job_reference`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -82,18 +86,13 @@ CREATE TABLE IF NOT EXISTS `job_listings` (
 job-board/
 |-- app/
 |   |-- config/
-|   |   |-- config.php
+|   |   |-- Database.php
 |   |
 |   |-- lib/
 |   |   |-- debug.php
 |   |
-|   |-- controllers/
-|   |   |-- HomeController.php
-|   |   |-- JobController.php
-|   |
 |   |-- models/
 |   |   |-- JobModel.php
-|   |   |-- Database.php
 |   |
 |   |-- views/
 |       |-- include/

@@ -3,18 +3,23 @@
 namespace App\config;
 
 /**
- * CONNECTION A LA BDD
- */ 
-class Database extends \PDO {
+ * Classe Database pour la Gestion de la Connexion à la Base de Données
+ *
+ */
+class Database {
 
-    public function __construct(){
+    /**
+     * Établir une connexion à la base de données.
+     *
+     * @return \PDO  instance de la classe PDO représentant la connexion à la base de données.
+     */
+    public static function connect() {
 
-        $conn = 'mysql:dbname=matthc_jobboard;host=127.0.0.1';
-        $user = 'SUBSKILL';
-        $password = 'SUBSKILL';
-    
-       parent::__construct($conn, $user, $password);
+        // Configuration de la connexion à la base de données 
+        $conn = new \PDO("mysql:host=localhost;port=3306;dbname=matthc_jobboard;charset=utf8", "SUBSKILL", "SUBSKILL");
+
+        // Renvoie l'instance PDO pour la connexion à la base de données
+        return $conn;
     }
-
-
 }
+?>
