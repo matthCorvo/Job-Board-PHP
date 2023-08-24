@@ -1,0 +1,42 @@
+/******************************
+    Filtre:
+******************************/
+
+.filtre-box {
+    background: #fff;
+    padding: 35px 30px;
+}
+
+.box-content{
+    margin-bottom: 10px;
+    font-size: 14px;
+}
+
+
+.box-header{
+    border-bottom: 1px solid #ecedf2;
+    margin-bottom: 20px;
+}
+
+.box-header h4 {
+    font-size: 15px;
+    margin: 0;
+}
+
+
+.box-header a {
+    display: flex;
+    padding: 5px 0px;
+    justify-content: space-between;
+    flex-direction: row-reverse;
+}
+.box-header a:before {
+    font-family: FontAwesome;
+    content: "\f068";
+    padding-right: 5px;
+    font-weight: normal;
+    font-size: 15px;
+    color: #4540df;
+}
+
+

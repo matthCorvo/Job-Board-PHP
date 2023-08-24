@@ -1,0 +1,73 @@
+/******************************
+    LISTE:
+
+******************************/
+
+
+/*----------------------------------------*/
+/*  01 - Section Header
+/*----------------------------------------*/
+
+.text-info-liste{
+    font-weight: bolder;
+}
+
+.form-select {
+    padding-top: 12px;
+    padding-bottom: 12px;
+    border-radius: 0;
+    font-size: 14px;
+}
+
+/*----------------------------------------*/
+/*      02 - job listing
+/*----------------------------------------*/
+
+.job-listing-block {
+    background: #fff;
+    padding: 40px 35px;
+    padding-bottom: 25px;
+    font-size: 14px;
+    margin-bottom: 2px;
+    border-bottom:5px solid  #edf0f58f;
+}
+
+.block-logo{
+    margin-right: 35px;
+}
+
+.block-inner {
+    flex: 1;
+}
+
+.block-job-name{
+    margin-bottom: 10px;
+}
+
+.block-job-name span{
+    display: inline-block;
+    color: #4540df;
+    font-weight: 700;
+    position: relative;
+    margin-right: 20px;
+}
+
+.block-job-info {
+    position: relative;
+    display: flex;
+    flex-wrap: wrap;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.block-job-info li {
+    margin-right: 13px;
+    display: flex;
+    align-items: center;
+}
+.block-job-info  li i {
+    color: #4540df;
+    margin-right: 5px;
+    font-size: 16px;
+}

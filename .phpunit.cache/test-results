@@ -1,0 +1,1 @@
+{"version":1,"defects":[],"times":{"tests\\DatabaseTest::testExample":0.013,"App\\Tests\\DatabaseTest::testDatabaseConnection":0.009}}
