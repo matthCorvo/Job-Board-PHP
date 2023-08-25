@@ -35,20 +35,20 @@
     if ($totalPages > 1): ?> <!-- Check if there are more than one page -->
         <ul class="pagination justify-content-center">
             <!-- Previous Page Link -->
-            <li class="page-item <?= $currentPage == 1 ? 'd-none' : ''; ?>">
-                <a class="page-link" href="index.php?page=<?= ($currentPage - 1); ?>&<?= $queryString; ?>">&lt;</a>
+            <li class="page-item <?= $pageActuelle == 1 ? 'd-none' : ''; ?>">
+                <a class="page-link" href="index.php?page=<?= ($pageActuelle - 1); ?>&<?= $queryString; ?>">&lt;</a>
             </li>
             
             <!-- Page Links -->
             <?php for ($i = 1; $i <= $totalPages; $i++): ?>
-                <li class="page-item <?= $i == $currentPage ? 'active' : ''; ?>">
+                <li class="page-item <?= $i == $pageActuelle ? 'active' : ''; ?>">
                     <a class="page-link" href="index.php?page=<?= $i; ?>&<?= $queryString; ?>"><?= $i; ?></a>
                 </li>
             <?php endfor; ?>
             
             <!-- Next Page Link -->
-            <li class="page-item <?= $currentPage == $totalPages ? 'd-none' : ''; ?>">
-                <a class="page-link" href="index.php?page=<?= ($currentPage + 1); ?>&<?= $queryString; ?>">&gt;</a>
+            <li class="page-item <?= $pageActuelle == $totalPages ? 'd-none' : ''; ?>">
+                <a class="page-link" href="index.php?page=<?= ($pageActuelle + 1); ?>&<?= $queryString; ?>">&gt;</a>
             </li>
         </ul>
     <?php endif; ?>

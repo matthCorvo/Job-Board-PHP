@@ -5,16 +5,12 @@ namespace App\config;
 use PDO;
 use PDOException;
 
-/**
- * Classe Database pour la Gestion de la Connexion à la Base de Données
- *
- */
 class Database {
 
     /**
-     * Établir une connexion à la base de données.
+     * Connexion à la base de données.
      *
-     * @return \PDO|null Instance de la classe PDO représentant la connexion à la base de données ou null en cas d'échec.
+     * @return \PDO|null Instance de la classe PDO - connexion à la base de données ou null en cas d'échec.
      */
     public static function connect() {
         try {

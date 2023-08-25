@@ -2,17 +2,25 @@
 
 namespace App\Models;
 
-class Api{
+class Api {
 
-    function getImageUrlFromAPI() {
-        // Effectuer une requête à l'API
+    /**
+     * Obtient une URL d'image depuis une API externe.
+     *
+     * Cette fonction envoie une requête à une API externe pour récupérer une URL d'image.
+     * Ensuite, elle analyse la réponse JSON pour extraire l'URL de l'image.
+     *
+     * @return string L'URL de l'image récupérée.
+     */
+    public function getImageUrlFromAPI() : string {
+      
+        // Envoie une requête à l'API
         $apiUrl = file_get_contents('https://some-random-api.com/img/bird');
       
-        // Analyser la réponse JSON
+        // Analyse la réponse JSON
         $data = json_decode($apiUrl);
         
-        // Récupérer l'URL de l'image
+        // Récupére l'URL de l'image
         return $data->link;
-      }
-      
+    }
 }
