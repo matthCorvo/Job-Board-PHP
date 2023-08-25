@@ -8,7 +8,6 @@
 
                         <?php require_once 'filtre.php'; ?>
                         <?php require_once 'liste.php'; ?>
-                        <?php require_once 'pagination.php'; ?>
 
 						</div> 
 					</div> 

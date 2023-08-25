@@ -3,9 +3,7 @@
 <div class="col-md-12 col-lg-8"> 
   <div class="row align-items-end mb-4"><!--  Header -->
 
-    <div class="col"><!--  infos -->
-        <p class="mb-0 text-info-liste"> <?= count($offres) ?> offres d'emplois sur ...</p>
-    </div>
+
 
     <div class="col-auto"> <!--  Tri -->
         <select class="form-select" aria-label="Default select">
@@ -19,7 +17,14 @@
   </div> <!--  !Header -->
 
   <div class="job-listing"> <!--  job-listing -->
-  
+  <?php if (count($offres) == 0) : ?>
+    <div class="job-listing-block">
+
+        <div class="block-inner d-flex justify-content-center"><!--  Text -->
+        <p>Aucune offre d'emploi ne correspond à vos filtres. </p>
+       </div>
+    </div>
+    <?php else: ?>
     <?php foreach ($offres as $row): ?>
     <div class="job-listing-block">
       <div class="d-flex">
@@ -54,9 +59,11 @@
        </div>
     </div>
     <?php endforeach; ?>
+    <?php endif; ?>
 
   </div><!--  !job-listing -->
 
+  <?php require_once 'pagination.php'; ?>
 
 
 </div> 

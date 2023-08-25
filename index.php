@@ -7,12 +7,16 @@ use App\Models\JobModel;
 require_once 'vendor/autoload.php';
 require_once 'app/lib/debug.php';
 
-// LISTE //
-// Appelez la méthode getAllJobs() pour récupérer les emplois
 $offresEmplois = new JobModel();
-$offres = $offresEmplois->getAllJobs();
-$villes = $offresEmplois->getFilteringCheckbox();
-d($villes);
+// Get selected filter values from the query parameters
+$selectedCities = isset($_GET['ville']) ? $_GET['ville'] : [];
+$selectedMetiers = isset($_GET['metier']) ? $_GET['metier'] : [];
+$selectedContrats = isset($_GET['contrat']) ? $_GET['contrat'] : [];
+
+    // Use the getFilteredJobs method to retrieve filtered job listings
+    $offres = $offresEmplois->getFilteredJobs($selectedCities, $selectedMetiers, $selectedContrats);
+
+
 
 // format date 
 $Utility = new Utility();
@@ -22,10 +26,6 @@ $Api = new Api();
 $ApiUrl = $Api->getImageUrlFromAPI();
 
 
-// // FILTRE //
-// $filtre = $offresEmplois->getFilteringCheckbox();
-// $villes = $filtre['villes'];
 
-// d($all_city);
 
 include_once 'template/index.php';

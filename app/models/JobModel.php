@@ -47,55 +47,79 @@ class JobModel {
 
         // DEBUG
         //d($offresEmploi);
-
+            
         // Renvoie les données récupérées
         return $offresEmploi;
     }
 
-    /**
-     * Récupère toutes les données pour le filtre.
-     *
-     * @return 
-     */
-    public function getFilteringCheckbox() {
-
-    // Perform a database query to retrieve city names
-    $sqlVille = $this->database->prepare('SELECT * FROM villes');
-    $sqlVille->execute();
-
-    // Fetch all city names and add them to the $villes array
-    $villes = $sqlVille->fetchAll(\PDO::FETCH_OBJ);
-
-    // You can now use the $villes array to display city names in your view.
-    return $villes;
+    public function getFilteredJobs($selectedCities = [], $selectedMetiers = [], $selectedContrats = []) {
+        $filteredJobs = [];
     
-     
-         
+        
+        // Build the SQL query
+        $query = 'SELECT offres_emploi.*, villes.nom AS ville_nom, metiers.nom AS metier_nom, contrats.nom AS contrat_nom
+                FROM offres_emploi 
+                INNER JOIN villes ON offres_emploi.ville_id = villes.id
+                INNER JOIN metiers ON offres_emploi.metier_id = metiers.id
+                INNER JOIN contrats ON offres_emploi.contrat_id = contrats.id';
 
-        //  $SQL_metiers = $this->database->prepare("SELECT distinct `metiers` FROM `offres_emploi` GROUP BY `metiers`");
-        //  $SQL_metiers->execute();
-        //  $metiers = $SQL_metiers->fetchAll(\PDO::FETCH_OBJ);
+        // Build the WHERE clause based on selected filters
+        $whereClause = [];
+        $params = [];
 
-        //  $SQL_contrats = $this->database->prepare("SELECT distinct `contrats` FROM `offres_emploi` GROUP BY `contrats`");
-        //  $SQL_contrats->execute();
-        //  $contrats = $SQL_contrats->fetchAll(\PDO::FETCH_OBJ);
+        // Check and add the filter for selected cities
+        // if (!empty($selectedCities)) {
+        //     $whereClause[] = 'ville_id IN (' . implode(', ', array_fill(0, count($selectedCities), '?')) . ')';
+        //     $params = array_merge($params, $selectedCities);
+        // }
 
-            // 'villes'     => $villes,
-            // 'metiers' =>  $metiers,
-            // 'contrats' =>  $contrats
-       
-         // Renvoie les données récupérées
+
+        if (!empty($selectedCities)) {
+            $placeholders = implode(', ', array_fill(0, count($selectedCities), '?'));
+            $whereClause[] = 'villes.nom IN (' . $placeholders . ')';
+            $params = array_merge($params, $selectedCities);
+        }
+        // Check and add the filter for selected metiers
+        // if (!empty($selectedMetiers)) {
+        //     $whereClause[] = 'metier_id IN (' . implode(', ', array_fill(0, count($selectedMetiers), '?')) . ')';
+        //     $params = array_merge($params, $selectedMetiers);
+        // }
+
+        if (!empty($selectedMetiers)) {
+            $placeholders = implode(', ', array_fill(0, count($selectedMetiers), '?'));
+            $whereClause[] = 'metiers.nom IN (' . $placeholders . ')';
+            $params = array_merge($params, $selectedMetiers);
+        }
+        // Check and add the filter for selected contrats
+        // if (!empty($selectedContrats)) {
+        //     $whereClause[] = 'contrat_id IN (' . implode(', ', array_fill(0, count($selectedContrats), '?')) . ')';
+        //     $params = array_merge($params, $selectedContrats);
+        // }
+
+        if (!empty($selectedContrats)) {
+            $placeholders = implode(', ', array_fill(0, count($selectedContrats), '?'));
+            $whereClause[] = 'contrats.nom IN (' . $placeholders . ')';
+            $params = array_merge($params, $selectedContrats);
+        }
+        // If there are filters, add the WHERE clause to the query
+        if (!empty($whereClause)) {
+            $query .= ' WHERE ' . implode(' AND ', $whereClause);
+        }
+
+      
+      
+
+        // Prepare and execute the query
+        $stmt = $this->database->prepare($query);
+        $stmt->execute($params);
+
+        // Fetch the filtered job listings
+        $filteredJobs = $stmt->fetchAll(\PDO::FETCH_OBJ);
+
+        
+        // var_dump($filteredJobs);
+        return $filteredJobs;
+
     }
-
- 
-
-// tri
-// if(isset($_GET['sort_price']) && $_GET['sort_price']!="") :
-//     if($_GET['sort_price']=='price-asc-rank') :
-//         $sql.=" ORDER BY price ASC";
-//     elseif($_GET['sort_price']=='price-desc-rank') :
-//         $sql.=" ORDER BY price DESC";
-//     endif;
-// endif;
-
+    
 }
