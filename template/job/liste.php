@@ -21,7 +21,7 @@
     <div class="job-listing-block">
 
         <div class="block-inner d-flex justify-content-center"><!--  Text -->
-        <p>Aucune offre d'emploi ne correspond à vos filtres. </p>
+        <p>Aucune offre d'emploi ne correspond à votre rechcerche. </p>
        </div>
     </div>
     <?php else: ?>

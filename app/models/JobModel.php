@@ -45,14 +45,11 @@ class JobModel {
         // Récupération des données 
         $offresEmploi = $SQL->fetchAll(\PDO::FETCH_OBJ);
 
-        // DEBUG
-        //d($offresEmploi);
-            
         // Renvoie les données récupérées
         return $offresEmploi;
     }
 
-    public function getFilteredJobs($selectedCities = [], $selectedMetiers = [], $selectedContrats = []) {
+    public function getFilteredJobs($selectedCities = [], $selectedMetiers = [], $selectedContrats = [], $currentPage = 1, $itemsPerPage = 10) {
         $filteredJobs = [];
     
         
@@ -67,11 +64,6 @@ class JobModel {
         $whereClause = [];
         $params = [];
 
-        // Check and add the filter for selected cities
-        // if (!empty($selectedCities)) {
-        //     $whereClause[] = 'ville_id IN (' . implode(', ', array_fill(0, count($selectedCities), '?')) . ')';
-        //     $params = array_merge($params, $selectedCities);
-        // }
 
 
         if (!empty($selectedCities)) {
@@ -79,23 +71,14 @@ class JobModel {
             $whereClause[] = 'villes.nom IN (' . $placeholders . ')';
             $params = array_merge($params, $selectedCities);
         }
-        // Check and add the filter for selected metiers
-        // if (!empty($selectedMetiers)) {
-        //     $whereClause[] = 'metier_id IN (' . implode(', ', array_fill(0, count($selectedMetiers), '?')) . ')';
-        //     $params = array_merge($params, $selectedMetiers);
-        // }
+  
 
         if (!empty($selectedMetiers)) {
             $placeholders = implode(', ', array_fill(0, count($selectedMetiers), '?'));
             $whereClause[] = 'metiers.nom IN (' . $placeholders . ')';
             $params = array_merge($params, $selectedMetiers);
         }
-        // Check and add the filter for selected contrats
-        // if (!empty($selectedContrats)) {
-        //     $whereClause[] = 'contrat_id IN (' . implode(', ', array_fill(0, count($selectedContrats), '?')) . ')';
-        //     $params = array_merge($params, $selectedContrats);
-        // }
-
+    
         if (!empty($selectedContrats)) {
             $placeholders = implode(', ', array_fill(0, count($selectedContrats), '?'));
             $whereClause[] = 'contrats.nom IN (' . $placeholders . ')';
@@ -106,20 +89,31 @@ class JobModel {
             $query .= ' WHERE ' . implode(' AND ', $whereClause);
         }
 
-      
-      
+      // Create a Pagination instance with the actual total count of filtered jobs
+      $countQuery = 'SELECT COUNT(*) AS total FROM (' . $query . ') AS filtered_jobs';
+      $stmt = $this->database->prepare($countQuery);
+      $stmt->execute($params);
+      $totalJobListings = (int) $stmt->fetchColumn(); // Convert the result to an integer
+  
+      $pagination = new Pagination($totalJobListings, $itemsPerPage, $currentPage);
+  
+      // Calculate total pages and offset
+      $offset = $pagination->calculateOffset();
+  
+      // Add LIMIT and OFFSET to the query for pagination
+      $query .= " LIMIT $itemsPerPage OFFSET $offset";
+    // Prepare and execute the query
+    $stmt = $this->database->prepare($query);
+    $stmt->execute($params);
 
-        // Prepare and execute the query
-        $stmt = $this->database->prepare($query);
-        $stmt->execute($params);
+    // Fetch the filtered job listings
+    $filteredJobs = $stmt->fetchAll(\PDO::FETCH_OBJ);
 
-        // Fetch the filtered job listings
-        $filteredJobs = $stmt->fetchAll(\PDO::FETCH_OBJ);
-
-        
-        // var_dump($filteredJobs);
-        return $filteredJobs;
+    return $filteredJobs;
 
     }
-    
+
+   
+
+
 }
