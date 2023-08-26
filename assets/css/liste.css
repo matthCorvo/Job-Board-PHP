@@ -35,6 +35,10 @@
 .block-logo{
     margin-right: 35px;
 }
+.block-logo img{
+    width: 60px;
+    height: 60px;
+}
 
 .block-inner {
     flex: 1;

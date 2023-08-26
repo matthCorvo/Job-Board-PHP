@@ -1,59 +1,51 @@
 <?php
 
-use App\Controller\PaginationController;
+use App\Controller\JobController;
 use App\Lib\Utility;
 use App\Models\Api;
 use App\Models\FiltreModel;
-use App\Models\JobModel;
 
 require_once 'vendor/autoload.php';
 require_once 'app/lib/debug.php';
 
 
-////////////////////////////////////////////////////////
-// valeurs de filtre sélectionnées depuis les paramètres de la requête
+/**
+ * Filtre CheckBox
+ * 
+ * Récupération des filtres tels que les métiers, les villes et les contrats
+ * disponibles depuis la base de données.
+ */
 $filtre = new FiltreModel();
+
 $metiers = $filtre->getFiltreMetiers();
 $villes = $filtre->getFiltreVilles();
 $contrats = $filtre->getFiltreContrats();
 
 
-// ////////////////////////////////////////////////////////////////////////////
-// // instance du modèle JobModel pour gérer les offres d'emploi
-$offresEmplois = new JobModel();
+/**
+ * 
+ * Affichage des offres d'emploi avec gestion de la pagination.
+ */
+$JobController = new JobController();
 
-// Define the current page and items per page
-$pageActuelle = isset($_GET['page']) ? (int)$_GET['page'] : 1;
-$OffresParPage = 10; // Number of items per page
+// Récupération des offres d'emploi avec gestion de la pagination
+$JobBoard = $JobController->getOffresAvecPagination();
 
-// Calculate the total number of pages
-$totalOffres = $offresEmplois->getTotalOffres();
-
-// Calculate the offset based on the current page and items per page
-$offset = ($pageActuelle - 1) * $OffresParPage;
-
-// Fetch the data for the current page
-$offres = $offresEmplois->getSelectionEmploi($offset, $OffresParPage);
-// var_dump($offres); 
-
-// Calculate the total number of pages
-$totalPages = ceil($totalOffres / $OffresParPage);
-
-// Get the count of filtered job offers
-$filteredOffres = $filtre->countFilteredOffres($selectionVilles, $selectionMetiers, $selectionContrats);
-
-// Calculate the total number of pages
-// $totalFilteredOffres = ceil($filteredOffres / $OffresParPage);
-var_dump($filteredOffres);
-///////////////////////////////////////////////////////////////
-// Formatter la date
-$Utility = new Utility();
-
-// récupérée l'url de l'image depuis l'API 
-$Api = new Api();
-$ApiUrl = $Api->getImageUrlFromAPI();
+// Récupération des données nécessaires
+$offres = $JobBoard['offres'];              // Les offres d'emploi de la page actuelle
+$totalPages = $JobBoard['totalPages'];      // Le nombre total de pages de pagination
+$pageActuelle = $JobBoard['pageActuelle'];  // La page actuelle
+$OffresParPage = $JobBoard['OffresParPage'];// Le nombre d'offres affichées par page
 
 
+/**
+ * Détails des offres
+ * 
+ * Formatage de la date en français
+ * Récupération des logos d'entreprise depuis une API externe.
+ */
+$Utility = new Utility(); // Initialisation de l'utilitaire de formatage de date en français
+$Api = new Api(); // Initialisation de la récupération des logos d'entreprise depuis une API externe
 
 
 include_once 'template/index.php';

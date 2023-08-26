@@ -3,7 +3,6 @@
 namespace App\Models;
 
 use App\config\Database;
-use App\Controller\PaginationController;
 
 /**
  * Modèle de données pour la gestion des offres d'emploi.
@@ -14,7 +13,7 @@ class JobModel {
     protected ?\PDO $database = null;
     
     /**
-     * Initialise les variables.
+     * Initialise la base de donnée.
      */
     public function __construct(){
         $this->database = Database::connect();
@@ -23,17 +22,14 @@ class JobModel {
 
 
     /**
-     * Récupère les offres d'emploi filtrées en fonction du filtre.
+     * Récupère les offres d'emploi filtrées en fonction du filtre et de la pagination.
      *
-     * @param array $selectionVilles Tableau des villes sélectionnées pour le filtre.
-     * @param array $selectionMetiers Tableau des métiers sélectionnés pour le filtre.
-     * @param array $selectionContrats Tableau des contrats sélectionnés pour le filtre.
-     * @param int $pageActuelle Le numéro de la page actuelle.
+     * @param int $pageDePagination  La position de départ des résultats à récupérer.
      * @param int $OffresParPage Le nombre d'articles par page.
      * @return array Les offres d'emploi filtrées.
      */
-    public function getSelectionEmploi($offset, $OffresParPage) {
-        // Construire la requête SQL
+    public function getSelectionEmploi($pageDePagination, $OffresParPage) :array {
+        // Construire la requête SQL pour récupérer les offres d'emploi filtrées et paginées
         $sql = $this->database->prepare('SELECT offres_emploi.*, 
                          villes.nom AS ville_nom, 
                          metiers.nom AS metier_nom, 
@@ -42,30 +38,36 @@ class JobModel {
                   INNER JOIN villes ON offres_emploi.ville_id = villes.id
                   INNER JOIN metiers ON offres_emploi.metier_id = metiers.id
                   INNER JOIN contrats ON offres_emploi.contrat_id = contrats.id
-                  LIMIT :offset, :limit
+                  LIMIT :pageDePagination, :offresParPage
                   ');
     
-    // Bind the parameters
-    $sql->bindParam(':offset', $offset, \PDO::PARAM_INT);
-    $sql->bindParam(':limit', $OffresParPage, \PDO::PARAM_INT);
+        // Securiser les paramètres
+        $sql->bindParam(':pageDePagination', $pageDePagination, \PDO::PARAM_INT);
+        $sql->bindParam(':offresParPage', $OffresParPage, \PDO::PARAM_INT);
 
-    $sql->execute();
+        $sql->execute();
 
-    // Récupérer les offres d'emploi filtrées
-    $selectionEmploi = $sql->fetchAll(\PDO::FETCH_OBJ);
+        // Récupérer les offres d'emploi filtrées et paginées
+        $selectionEmploi = $sql->fetchAll(\PDO::FETCH_OBJ);
     
-    // Renvoie les offres d'emploi filtrées en fonction des critères de recherche.
-    return $selectionEmploi;
-}
+        // Renvoie les offres d'emploi filtrées en fonction des critères de recherche et de la pagination.
+        return $selectionEmploi;
+    }
 
-public function getTotalOffres() {
-    // Construct the SQL query to count the total number of job offers
-    $sql = $this->database->query('SELECT COUNT(*) as total FROM offres_emploi');
-    $result = $sql->fetch(\PDO::FETCH_OBJ);
-    // Return the total count
-    
-    return (int)$result->total;
-}
+    /**
+     * Récupère le nombre total d'offres d'emploi dans la base de données.
+     *
+     * @return int Le nombre total d'offres d'emploi.
+     */
+    public function getTotalOffres() : int{
+        // Construire la requête SQL pour compter le nombre total d'offres d'emploi
+        $sql = $this->database->query('SELECT COUNT(*) as total FROM offres_emploi');
+        $result = $sql->fetch(\PDO::FETCH_OBJ);
+        
+        // Retourner le nombre total d'offres d'emploi
+        return (int)$result->total;
+    }
+
 
 // tri
 // if(isset($_GET['sort_price']) && $_GET['sort_price']!="") :
