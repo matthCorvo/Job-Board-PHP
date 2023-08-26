@@ -12,7 +12,7 @@ use App\Controller\PaginationController;
  */
 class JobModel {
     protected ?\PDO $database = null;
-
+    
     /**
      * Initialise les variables.
      */
@@ -32,7 +32,7 @@ class JobModel {
      * @param int $OffresParPage Le nombre d'articles par page.
      * @return array Les offres d'emploi filtrées.
      */
-    public function getSelectionEmploi() {
+    public function getSelectionEmploi($offset, $OffresParPage) {
         // Construire la requête SQL
         $sql = $this->database->prepare('SELECT offres_emploi.*, 
                          villes.nom AS ville_nom, 
@@ -41,8 +41,14 @@ class JobModel {
                   FROM offres_emploi 
                   INNER JOIN villes ON offres_emploi.ville_id = villes.id
                   INNER JOIN metiers ON offres_emploi.metier_id = metiers.id
-                  INNER JOIN contrats ON offres_emploi.contrat_id = contrats.id');
+                  INNER JOIN contrats ON offres_emploi.contrat_id = contrats.id
+                  LIMIT :offset, :limit
+                  ');
     
+    // Bind the parameters
+    $sql->bindParam(':offset', $offset, \PDO::PARAM_INT);
+    $sql->bindParam(':limit', $OffresParPage, \PDO::PARAM_INT);
+
     $sql->execute();
 
     // Récupérer les offres d'emploi filtrées
@@ -61,7 +67,14 @@ public function getTotalOffres() {
     return (int)$result->total;
 }
 
-
+// tri
+// if(isset($_GET['sort_price']) && $_GET['sort_price']!="") :
+//     if($_GET['sort_price']=='price-asc-rank') :
+//         $sql.=" ORDER BY price ASC";
+//     elseif($_GET['sort_price']=='price-desc-rank') :
+//         $sql.=" ORDER BY price DESC";
+//     endif;
+// endif;
     
 }
 

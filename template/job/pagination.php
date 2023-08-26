@@ -15,6 +15,8 @@
   <!-- Pagination -->
 
 <!-- Pagination -->
+<?php if ($filteredOffres >= 10)  : ?>
+
 <nav aria-label="Page navigation" class="mt-4 pt-3">
     <ul class="pagination justify-content-center"> 
         <?php
@@ -23,16 +25,16 @@
    unset($queryParams['page']); // Remove the existing "page" parameter if it exists
    
         // Generate the "Previous" link
-        if ($pageActuelle > 1) :  ?>
-            <li class="page-item">
-               <a class="page-link" href="<?= 'index.php?page=' . ($pageActuelle - 1) . '&' . http_build_query($queryParams); ?>">&lt;</a>
-            </li>
-            <?php else : ?>
-            <li class="page-item d-none">
-               <span class="page-link">&lt;</span>
-            </li>
-            <?php endif; ?>
-            
+        if ($pageActuelle > 1) : ?>
+         <li class="page-item">
+             <a class="page-link" href="<?= 'index.php?page=' . ($pageActuelle - 1) . '&' . http_build_query($queryParams); ?>">&lt;</a>
+         </li>
+     <?php else : ?>
+         <li class="page-item d-none">
+             <span class="page-link">&lt;</span>
+         </li>
+     <?php endif; ?>
+
             <?php for ($i = 1; $i <= $totalPages; $i++) :
             if ($i === $pageActuelle) : ?>
                 <li class="page-item active">
@@ -55,8 +57,8 @@
                 <span class="page-link">&gt;</span>
             </li>
         <?php endif; ?>
-        <!-- var_dump($queryParams); -->
 
     </ul>
 </nav>
+<?php endif; ?>
 

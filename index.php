@@ -22,16 +22,29 @@ $contrats = $filtre->getFiltreContrats();
 // // instance du modèle JobModel pour gérer les offres d'emploi
 $offresEmplois = new JobModel();
 
-$offres = $offresEmplois->getSelectionEmploi();
-
-$totalOffres = $offresEmplois->getTotalOffres();
-
 // Define the current page and items per page
 $pageActuelle = isset($_GET['page']) ? (int)$_GET['page'] : 1;
 $OffresParPage = 10; // Number of items per page
+
+// Calculate the total number of pages
+$totalOffres = $offresEmplois->getTotalOffres();
+
+// Calculate the offset based on the current page and items per page
+$offset = ($pageActuelle - 1) * $OffresParPage;
+
+// Fetch the data for the current page
+$offres = $offresEmplois->getSelectionEmploi($offset, $OffresParPage);
+// var_dump($offres); 
+
 // Calculate the total number of pages
 $totalPages = ceil($totalOffres / $OffresParPage);
 
+// Get the count of filtered job offers
+$filteredOffres = $filtre->countFilteredOffres($selectionVilles, $selectionMetiers, $selectionContrats);
+
+// Calculate the total number of pages
+// $totalFilteredOffres = ceil($filteredOffres / $OffresParPage);
+var_dump($filteredOffres);
 ///////////////////////////////////////////////////////////////
 // Formatter la date
 $Utility = new Utility();
