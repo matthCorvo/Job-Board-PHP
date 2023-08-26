@@ -18,52 +18,44 @@
 <nav aria-label="Page navigation" class="mt-4 pt-3">
     <ul class="pagination justify-content-center"> 
         <?php
-     
-        // Define your query parameters as an associative array
-        $params = [
-            'page' => $pageActuelle,
-            
-        ];
-
-        // Use http_build_query to create the query string
-        $queryString = http_build_query($params);
-        
-        // Define the URL pattern for the pagination links
-        $urlPattern = 'index.php?' . $queryString;
-var_dump($urlPattern);
+   // Capture the existing query parameters
+   $queryParams = $_GET;
+   unset($queryParams['page']); // Remove the existing "page" parameter if it exists
+   
         // Generate the "Previous" link
         if ($pageActuelle > 1) :  ?>
             <li class="page-item">
-                <a class="page-link" href="<?= sprintf($urlPattern, $pageActuelle - 1); ?>">&lt;</a>
+               <a class="page-link" href="<?= 'index.php?page=' . ($pageActuelle - 1) . '&' . http_build_query($queryParams); ?>">&lt;</a>
             </li>
-        <?php else : ?>
+            <?php else : ?>
             <li class="page-item d-none">
-                <span class="page-link">&lt;</span>
+               <span class="page-link">&lt;</span>
             </li>
-        <?php endif; ?>
-
-        <?php for ($i = 1; $i <= $totalPages; $i++) :
+            <?php endif; ?>
+            
+            <?php for ($i = 1; $i <= $totalPages; $i++) :
             if ($i === $pageActuelle) : ?>
                 <li class="page-item active">
-                    <span class="page-link"><?= $i; ?></span>
-                </li>
+                   <span class="page-link"><?= $i; ?></span>
+                  </li>
             <?php else : ?>
                 <li class="page-item">
-                    <a class="page-link" href="<?= sprintf($urlPattern, $i); ?>"><?= $i; ?></a>
-                </li>
+                   <a class="page-link" href="<?= 'index.php?page=' . $i . '&' . http_build_query($queryParams); ?>"><?= $i; ?></a>
+                  </li>
             <?php endif; ?>
         <?php endfor; ?>
 
         <?php // Generate the "Next" link
         if ($pageActuelle < $totalPages) : ?>
             <li class="page-item">
-                <a class="page-link" href="<?= sprintf($urlPattern, $pageActuelle + 1); ?>">&gt;</a>
+            <a class="page-link" href="<?= 'index.php?page=' . ($pageActuelle + 1) . '&' . http_build_query($queryParams); ?>">&gt;</a>
             </li>
         <?php else : ?>
             <li class="page-item d-none">
                 <span class="page-link">&gt;</span>
             </li>
         <?php endif; ?>
+        <!-- var_dump($queryParams); -->
 
     </ul>
 </nav>
