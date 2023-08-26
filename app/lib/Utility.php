@@ -14,7 +14,7 @@ class Utility {
      * @param string $date La date à formater au format YYYY-MM-DD.
      * @return string La date formatée en français.
      */
-    function formatDate($date) {
+    function  formatDate($date) {
         
         $timestamp = strtotime($date);
 

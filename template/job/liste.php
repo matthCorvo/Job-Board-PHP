@@ -15,17 +15,24 @@
     </div>
 
   </div> <!--  !Header -->
-
+  
   <div class="job-listing"> <!--  job-listing -->
-  <?php if (count($offres) == 0) : ?>
-    <div class="job-listing-block">
+  
+    <?php 
+      $selectionVilles = isset($_GET['ville']) ? $_GET['ville'] : [];
+      $selectionMetiers = isset($_GET['metier']) ? $_GET['metier'] : [];
+      $selectionContrats = isset($_GET['contrat']) ? $_GET['contrat'] : [];
+      $MsgAucuneOffre = true; // Variable to track if no results message should be shown
 
-        <div class="block-inner d-flex justify-content-center"><!--  Text -->
-        <p>Aucune offre d'emploi ne correspond à votre rechcerche. </p>
-       </div>
-    </div>
-    <?php else: ?>
-    <?php foreach ($offres as $row): ?>
+      foreach ($offres as $row): 
+        if (
+          (empty($selectionVilles) || in_array($row->ville_nom, $selectionVilles)) &&
+          (empty($selectionMetiers) || in_array($row->metier_nom, $selectionMetiers)) &&
+          (empty($selectionContrats) || in_array($row->contrat_nom, $selectionContrats)) 
+          ) :
+          $MsgAucuneOffre = false; // If there's a matching result, set this to false
+  ?>
+      
     <div class="job-listing-block">
       <div class="d-flex">
 
@@ -58,9 +65,19 @@
         </div>
        </div>
     </div>
-    <?php endforeach; ?>
-    <?php endif; ?>
+    
+    <?php endif;
+        endforeach;
 
+        // Check if there are no selected filters or if all selected filters are empty
+        if ($MsgAucuneOffre) :
+        ?>
+            <div class="job-listing-block">
+                <div class="block-inner d-flex justify-content-center"><!--  Text -->
+                    <p>Nous n'avons trouvé aucune offre d'emploi correspondant à votre recherche.</p>
+                </div>
+            </div>
+        <?php endif; ?>
   </div><!--  !job-listing -->
 
   <?php require_once 'pagination.php'; ?>

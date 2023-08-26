@@ -15,23 +15,17 @@
         </div>
         <div id="collapse01" class="collapse show">
             <?php 
-            $uniqueCities = [];
             $checked = isset($_GET['ville']) ? $_GET['ville'] : [];
-            foreach ($offres as $villeList)  {
-                $isChecked = in_array($villeList->ville_id, $checked);
-                
-                // Check if the city name is already in the uniqueCities array
-                if (!in_array($villeList->ville_nom, $uniqueCities)) {
-                    $uniqueCities[] = $villeList->ville_nom;
+            
+            foreach ($villes as $villeList)  :
+                $isChecked = in_array($villeList->nom, $checked);
                     ?>
                 <div class="form-check mb-2">
-                    <input class="form-check-input" type="checkbox" value='<?= $villeList->ville_nom ?>' id="<?= $villeList->ville_id ?>" name="ville[]" 
+                    <input class="form-check-input" type="checkbox" value='<?= $villeList->nom ?>' id="<?= $villeList->id ?>" name="ville[]" 
                     <?= $isChecked ? 'checked' : '' ;?>>
-                    <label class="form-check-label" for="location"><?= $villeList->ville_nom ?> </label>
+                    <label class="form-check-label" for="location"><?= $villeList->nom ?> </label>
                </div>
-            <?php }
-            }; ?>
-
+            <?php endforeach; ?>
            </div>
        </div>
 
@@ -43,22 +37,17 @@
           </div>
           <div id="collapse02" class="collapse show">
           <?php 
-            $uniquemetier = [];
             $checked = isset($_GET['metier']) ? $_GET['metier'] : [];
-            foreach ($offres as $metierList)  {
-                $isChecked = in_array($metierList->metier_id, $checked);
-                
-                // Check if the city name is already in the uniqueCities array
-                if (!in_array($metierList->metier_nom, $uniquemetier)) {
-                    $uniquemetier[] = $metierList->metier_nom;
+            foreach ($metiers as $metierList)  :
+                $isChecked = in_array($metierList->nom, $checked);
+               
                     ?>
                 <div class="form-check mb-2">
-                    <input class="form-check-input" type="checkbox" value='<?= $metierList->metier_nom ?>' id="<?= $metierList->metier_id ?>" name="metier[]" 
+                    <input class="form-check-input" type="checkbox" value='<?= $metierList->nom ?>' id="<?= $metierList->id ?>" name="metier[]" 
                     <?= $isChecked ? 'checked' : '' ;?>>
-                    <label class="form-check-label" for="location"><?= $metierList->metier_nom ?> </label>
+                    <label class="form-check-label" for="location"><?= $metierList->nom ?> </label>
                </div>
-            <?php }
-            }; ?>
+            <?php endforeach; ?>
            </div>
        </div>
 
@@ -70,22 +59,17 @@
           </div>
           <div id="collapse03" class="collapse show">
           <?php 
-            $uniqueContrat = [];
             $checked = isset($_GET['contrat']) ? $_GET['contrat'] : [];
-            foreach ($offres as $contratList)  {
-                $isChecked = in_array($contratList->contrat_id, $checked);
-                
-                // Check if the city name is already in the uniqueCities array
-                if (!in_array($contratList->contrat_nom, $uniqueContrat)) {
-                    $uniqueContrat[] = $contratList->contrat_nom;
+            foreach ($contrats as $contratList)  :
+                $isChecked = in_array($contratList->nom, $checked);
+               
                     ?>
                 <div class="form-check mb-2">
-                    <input class="form-check-input" type="checkbox" value='<?= $contratList->contrat_nom ?>' id="<?= $contratList->contrat_id ?>" name="contrat[]" 
+                    <input class="form-check-input" type="checkbox" value='<?= $contratList->nom ?>' id="<?= $contratList->id ?>" name="contrat[]" 
                     <?= $isChecked ? 'checked' : '' ;?>>
-                    <label class="form-check-label" for="location"><?= $contratList->contrat_nom ?> </label>
+                    <label class="form-check-label" for="location"><?= $contratList->nom ?> </label>
                </div>
-            <?php }
-            }; ?>
+            <?php endforeach; ?>
            </div> 
 
           </form>
