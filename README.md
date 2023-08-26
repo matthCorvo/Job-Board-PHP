@@ -1,155 +1,124 @@
-# php Job Board
- Job Board PHP MySQL
 
- # php my sql
- utilisateur : SUBSKILL
- mdp : SUBSKILL
+# JOB BOARD
 
-Le but de l’exercice est de créer une page de Job Board (offres d’emplois) avec un
-minimum de filtres et une pagination.
-Pour vous aider dans l’affichage, vous trouverez en annexe un mini « zoning » (un peu
-plus bas dans le document).✔️
-Le plus simple - le front n’étant pas noté ici - est de vous aider d’un framework type
-Bootstrap (https://getbootstrap.com/) ou Materialize (https://materializecss.com/).✔️
-L’intégralité de l’exercice sera basé sur PHP-MySQL.✔️
-En terme d’affichage il vous faudra lister les offres d’emplois avec pour chacune des
-offres :
+Création d'une page de Job Board, permettant la consultation d'offres d'emploi avec des fonctionnalités de filtrage et de pagination avec la base de données MySQL et le langage de programmation PHP. 
 
-● Date à laquelle l’offre a été publiée - L’affichage de la date doit être de la forme
-française (Ex: Vendredi 18 août 2023)
-● Date de mise à jour de l’offre (non affichée, mais présente en base)
-● Référence unique de l’offre d’emploi
-● Intitulé de l’offre
-● Lieu (ville, on ne reste que sur la France)
-● Type de contrat
-● Type de métier
-● Nom de l’entreprise qui poste l’annonce
-● Description de l’offre (affichage des 30 premiers caractères seulement)
+## Prérequis
 
-⚠️Une image devra être affichée dans l’encart dédié à une offre. Pour cela, il vous
-faudra utiliser l’API (gratuite) suivante : https://some-random-api.ml/meme. L’api
-retourne un format JSON. À vous d’utiliser ce JSON pour afficher l’image.
+- PHP >= 8.1
+- MySQL
+- Composer 
 
-Relations :
-Une entreprise peut avoir une ou plusieurs offres.
-Une annonce ne peut avoir qu’un seul lieu (ville), mais une ville peut recenser plusieurs
-annonces.
-Une annonce ne peut avoir qu’un seul type de métier / contrat mais un métier (ou type de
-contrat) peut être présent dans X annonces.
-Les données devront être présentes directement en base, nous ne demandons pas
-(obligatoirement) la création d’un back-office ici.
+## Installation
 
-La liste devra comporter une pagination. Chaque page sera composée de 10 offres.
-Selon le nombre d’offres présentes en base de données, votre pagination évoluera.
-Ex: Si vous avez 15 offres, vous aurez 2 pages. Après filtrage sur une ville, si vous n’avez que 5
-résultats, vous n’aurez donc plus de pagination.
-La pagination devra se faire de la manière suivante (en $_GET) :
-● Si vous avez 25 entrées en base, il y a donc 3 pages.
-Il est préférable (mais non obligatoire) d’utiliser la ré-écriture d’URL de type :
-● Au clic sur la page 2, l’URL doit devenir « /page2 »
-● Au clic sur la page 3, l’URL doit devenir « /page3 »
-Sinon, vous pouvez utiliser du $_GET simple de type « ?page=2 »
+Cloné le projet avec la commande
 
-⚠️N’oubliez pas que si l’on utilise les filtres, ceux-ci doivent être gardés lors d’un
-changement de page.
-Ex: J’ai 45 entrées en base de données, j’ai donc 5 pages de base. J’ai utilisé le filtre « Types de
-contrat : CDI », je n’ai plus que trois pages. Lorsque je vais cliquer sur la page 2, je dois
-garder les filtres.
-Le filtrage devra également se faire en $_GET (et donc vous aurez une URL de la forme «
-?metier=XXX » ou « ?metier=XXX&contrat=XXX ». Les filtres sont cumulables.
-Optionnel :
-● Un bouton “reset” sur le formulaire pour réinitialiser l’ensemble des filtres et
-pagination.
-● Création d’une API avec trois routes pour ajouter une offre, modifier une offre,
-supprimer une offre (sans protection / login)
-Ajouter un tri sur la liste avec :
-● Ordonner par date de publication ascendant / descendant
-● Ordonner par ordre alphabétique ascendant / descendant
+```bash
+https://github.com/matthCorvo/Job-Board-PHP.git
+```
+Ensuite, dans l'ordre taper les commandes dans votre terminal :
 
-<!-- TO DO -->
--- Table des entreprises
-CREATE TABLE entreprises (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    nom VARCHAR(255) NOT NULL
-);ENGINE=InnoDB DEFAULT CHARSET=utf8;
+```bash
+  composer install
+  composer update
+```
+## Structure du Projet
 
+```bash
 
--- Table des lieux (villes)
-CREATE TABLE lieux (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    nom VARCHAR(255) NOT NULL
-);ENGINE=InnoDB DEFAULT CHARSET=utf8;
+job-board/
+|-- app/
+| |-- config/
+| | |-- Database.php
+| |
+| |-- lib/
+| | |-- Utility.php
+| |
+| |-- Controller / // A AJOUTER
+| | |-- Utility.php
+| |
+| |-- models/
+| | |-- JobModel.php
+| | |-- ApiModel.php // MODIFIER NOM
+| | |-- PaginationModel.php // MODIFIER NOM
+| |
+|-- views/
+| |-- include/
+| | |-- header.php
+| | |-- footer.php
+| |
+| |-- job/
+| | |-- index.php
+| | |-- filtre.php
+| | |-- liste.php
+| | |-- pagination.php
+| |-- index.php
+| |
+|-- assets/
+| |-- css/
+| |   |-- filtre/
+| |   |-- liste/
+| |   |-- main/
+| |   
+| |-- js/
+| |   |-- page/ // A AJOUTER FILTRE 
+|
+|-- index.php
+```
+## Base de Données
 
+Le projet utilise une base de données MySQL avec les tables suivantes :
 
--- Table des métiers
-CREATE TABLE metiers (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    nom VARCHAR(100) NOT NULL
-);ENGINE=InnoDB DEFAULT CHARSET=utf8;
+### Table des entreprises
 
+```sql
 
--- Table des types de contrat
-CREATE TABLE types_contrat (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    nom VARCHAR(50) NOT NULL
-);ENGINE=InnoDB DEFAULT CHARSET=utf8;
+TABLE `villes` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `nom` varchar(255) NOT NULL,
+  PRIMARY KEY (`id`)
+)
 
+TABLE `metiers` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `nom` varchar(100) NOT NULL,
+  PRIMARY KEY (`id`)
+)
 
--- Table des offres d'emploi
-CREATE TABLE IF NOT EXISTS `offres_emploi` (
+TABLE `contrats` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `nom` varchar(50) NOT NULL,
+  PRIMARY KEY (`id`)
+)
+
+TABLE `offres_emploi` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `date_publication` date NOT NULL,
   `date_mise_a_jour` date DEFAULT NULL,
   `reference` varchar(255) NOT NULL,
   `nom` varchar(50) NOT NULL,
   `description` text NOT NULL,
+  `entreprise` varchar(100) NOT NULL,
   `ville_id` int(11) NOT NULL,
   `contrat_id` int(11) NOT NULL,
   `metier_id` int(11) NOT NULL,
-  `entreprise` varchar(100) NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8;
+  PRIMARY KEY (`id`),
+  KEY `fk_ville_id` (`ville_id`),
+  KEY `fk_contrat_id` (`contrat_id`),
+  KEY `fk_metier_id` (`metier_id`)
+  )
+## Fonctionnalités
 
-# structure du projet 
-job-board/
-|-- app/
-|   |-- config/
-|   |   |-- Database.php
-|   |
-|   |-- lib/
-|   |   |-- debug.php
-|   |
-|   |-- models/
-|   |   |-- JobModel.php
-|   |
-|   |-- views/
-|       |-- include/
-|       |   |-- header.php
-|       |   |-- footer.php
-|       |
-|       |-- index.php
-|       |
-|       |-- job/
-|           |-- index.php
-|           |-- filtre.php
-|           |-- detail.php
-|
-|-- assets/
-|   |-- css/
-|   |-- js/
-|   |-- images/
-|
-|-- vendor/                  // Répertoire généré par Composer
-|
-|-- .htaccess
-|-- composer.json
-|-- composer.lock
-|-- index.php
-
-
-# mise en place de la base de donnée 
-|-- config/
-|   |   |-- Database.php
-|   |
-
-  - création des test 
+- Affichage des offres d'emploi avec les détails suivants :
+Date de publication au format français (ex: Vendredi 18 août 2023)
+Référence unique de l'offre d'emploi
+Intitulé de l'offre
+Lieu (ville)
+Type de contrat
+Type de métier
+Nom de l'entreprise
+Description de l'offre (30 premiers caractères)
+Affichage d'une image liée à chaque offre en utilisant l'API gratuite some-random-api.ml qui retourne un format JSON.
+Filtres cumulables en utilisant des paramètres GET (ex: ?metier=XXX&contrat=XXX) avec possibilité de réinitialiser les filtres.
+Pagination avec 10 offres par page.
+Tri de la liste par date de publication ascendante/descendante et ordre alphabétique ascendante/descendante.
