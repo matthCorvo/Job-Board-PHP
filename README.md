@@ -6,9 +6,6 @@
 Création d'une page de Job Board, permettant la consultation d'offres d'emploi avec des fonctionnalités de filtrage et de pagination avec la base de données MySQL et le langage de programmation PHP. 
 
 
-
-
-
 ## Prérequis
 
 - PHP >= 8.1
@@ -28,6 +25,7 @@ Ensuite, dans l'ordre taper les commandes dans votre terminal :
   composer install
   composer update
 ```
+
 ## Structure du Projet
 
 ```
@@ -71,6 +69,8 @@ job-board/
 | |
 |-- index.php
 ```
+
+
 ## Base de Données
 
 Le projet utilise une base de données MySQL avec les tables suivantes :
@@ -116,6 +116,7 @@ TABLE `offres_emploi` (
 
   ```
 
+
 ## Fonctionnalités
 
 ### Affichage des Offres d'Emploi
@@ -130,7 +131,7 @@ L'application affiche les offres d'emploi avec les détails suivants :
 - Nom de l'entreprise qui poste l'annonce.
 - Description de l'offre (affichage des 30 premiers caractères seulement).
 
-- function getSelectionEmploi
+- Exemple d'extrait de code : function getSelectionEmploi
 ```
 /**
      * Récupère les offres d'emploi filtrées en fonction du filtre et de la pagination.
@@ -163,9 +164,11 @@ L'application affiche les offres d'emploi avec les détails suivants :
     
         // Renvoie les offres d'emploi filtrées en fonction des critères de recherche et de la pagination.
         return $selectionEmploi;
-    }
-    ```
-- Template liste
+    } 
+
+```
+
+- Exemple d'extrait de code : Template liste
 ```
   <?php 
 
@@ -179,10 +182,7 @@ L'application affiche les offres d'emploi avec les détails suivants :
         // Vérifie si le tableau sélectionnées est vide OU si le nom de de l'offre est présent dans les sélectionnées.
         (empty($selectionVilles) || in_array($row->ville_nom, $selectionVilles)) &&
         // ...
-        ) :
-        
-  ?>
-   <!-- ... -->
+        ) : ?>
           <a href="#"><?= $row->nom ?></a>
           <span><?= $row->entreprise ?></span> <?= $Utility->formatDate  ($row->date_publication) ?>
         <p><?=  substr($row->description, 0, 30) ?></p>
@@ -190,16 +190,14 @@ L'application affiche les offres d'emploi avec les détails suivants :
           <li><i class="fa-solid fa-tag"></i> <?= $row->metier_nom ?></li>
           <li><i class="fa-solid fa-hashtag"></i> <?= $row->reference ?></li>
           <p> <?= $row->contrat_nom ?></p> 
-             <!-- ... -->
-
-
+           
 ```
 
 
 ### Pagination
 La liste des offres d'emploi est paginée, avec 10 offres par page. Le nombre de pages varie en fonction du nombre d'offres en base de données.
 
-- function getTotalOffres
+- Exemple d'extrait de code : function getTotalOffres
 ```
 /**
      * Récupère le nombre total d'offres d'emploi dans la base de données.
@@ -214,9 +212,9 @@ La liste des offres d'emploi est paginée, avec 10 offres par page. Le nombre de
         // Retourner le nombre total d'offres d'emploi
         return (int)$result->total;
     }
+```
 
-    ```
-- function getOffresAvecPagination
+- Exemple d'extrait de code : function getOffresAvecPagination
 ```
 /**
      * Récupère les offres d'emploi avec pagination.
@@ -252,7 +250,8 @@ La liste des offres d'emploi est paginée, avec 10 offres par page. Le nombre de
         ];
     }
 ```
-- Template pagination
+
+- Exemple d'extrait de code : Template pagination
 ```
       <?php
       // Capture le paramètres de requête GET
@@ -295,7 +294,7 @@ Les utilisateurs peuvent filtrer les offres d'emploi par les critères suivants 
 
 Les filtres sont cumulables, et leur sélection est conservée lors du changement de page.
 
-- function getFiltreVilles, function getFiltreMetier, function getFiltreContrat
+- Exemple d'extrait de code : function getFiltreVilles, function getFiltreMetier, function getFiltreContrat
 ```  
   /**
      * Récupère les villes disponibles dans la base de données.
@@ -312,7 +311,8 @@ Les filtres sont cumulables, et leur sélection est conservée lors du changemen
     }
 
 ```
-- Template filtre
+
+- Exemple d'extrait de code : Template filtre
 ``` 
   <?php 
         $checked = isset($_GET['ville']) ? $_GET['ville'] : [];  // Vérifie si des villes ont été sélectionnées dans la requête GET
@@ -334,3 +334,7 @@ Les utilisateurs peuvent trier la liste par :
 
 ### API pour les Images
 Les logos des entreprises sont obtenus depuis une API externe (https://some-random-api.ml/meme) au format JSON.
+
+
+
+
