@@ -64,8 +64,6 @@ job-board/
 | | |-- liste.css
 | | |-- main.css
 | |
-| |-- js/
-| | |-- page.js
 | |
 |-- index.php
 ```
