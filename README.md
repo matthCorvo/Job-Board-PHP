@@ -36,7 +36,6 @@ Ensuite, dans l'ordre taper les commandes dans votre terminal :
   composer install
   composer update
 ```
-
 ## Base de Données
 
 Le projet utilise une base de données MySQL avec les tables suivantes :
