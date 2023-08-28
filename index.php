@@ -4,6 +4,7 @@ use App\Controller\JobController;
 use App\Lib\Utility;
 use App\Models\Api;
 use App\Models\FiltreModel;
+use App\Models\TriModel;
 
 require_once 'vendor/autoload.php';
 require_once 'app/lib/debug.php';
@@ -30,12 +31,12 @@ $JobController = new JobController();
 
 // Récupération des offres d'emploi avec gestion de la pagination
 $JobBoard = $JobController->getOffresAvecPagination();
-
 // Récupération des données nécessaires
 $offres = $JobBoard['offres'];              // Les offres d'emploi de la page actuelle
 $totalPages = $JobBoard['totalPages'];      // Le nombre total de pages de pagination
 $pageActuelle = $JobBoard['pageActuelle'];  // La page actuelle
 $OffresParPage = $JobBoard['OffresParPage'];// Le nombre d'offres affichées par page
+d($pageActuelle);
 
 
 /**

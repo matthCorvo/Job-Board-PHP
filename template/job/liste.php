@@ -1,15 +1,11 @@
 
 <div class="col-md-12 col-lg-8"> <!-- Colonne principale -->
-  <div class="row align-items-end mb-4"><!--  Header -->
+  <div class="row justify-content-end mb-4"><!--  Header -->
 
-    <div class="col-auto"> <!--  Tri -->
-        <select class="form-select" aria-label="Default select">
-          <option value="1">Nouvelles offres</option>
-          <option value="2">Anciennes offres</option>
-          <option value="3">Alphabétique (ascendant)</option>
-          <option value="4">Alphabétique (descendant)</option>
-          </select>
-    </div>
+  <div class="col-auto"> <!-- Tri -->
+  <?php require_once 'tri.php'; ?>
+
+  </div>
 
   </div> <!--  !Header -->
   
@@ -22,7 +18,7 @@
     $selectionMetiers = isset($_GET['metier']) ? $_GET['metier'] : [];
     $selectionContrats = isset($_GET['contrat']) ? $_GET['contrat'] : [];
     $MsgAucuneOffre = true;  // Affiche "Aucune offre" n'est affiché sie [] vide
-
+    $totalCountSelection = 0; 
     foreach ($offres as $row): 
 
       if (
@@ -32,6 +28,7 @@
         (empty($selectionContrats) || in_array($row->contrat_nom, $selectionContrats)) 
         ) :
         $MsgAucuneOffre = false; // $MsgAucuneOffre désactivé, car une offre correspond aux filtres.
+        $totalCountSelection++; // Incrémente le compteur des tableau sélectionnées
   ?>
       
   <div class="job-listing-block">
@@ -60,7 +57,7 @@
         </ul>
         </div>
 
-        <div class="block-job-ref">
+        <div class="block-job-contrat">
           <p> <?= $row->contrat_nom ?></p> 
         </div>
       </div>
@@ -69,6 +66,7 @@
     
   <?php endif;
    endforeach;
+
   // Vérifie si les filtres sélectionnés sont vides
   if ($MsgAucuneOffre) :  ?>
 
@@ -79,6 +77,8 @@
     </div>
    <?php endif; ?>
   </div><!-- Fin de la colonne principale -->
+  
+    <?php require_once 'pagination.php'; ?>
 
 
 

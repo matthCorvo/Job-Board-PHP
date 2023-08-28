@@ -70,8 +70,20 @@
     display: flex;
     align-items: center;
 }
+
 .block-job-info  li i {
     color: #4540df;
     margin-right: 5px;
     font-size: 16px;
 }
+
+.block-job-contrat {
+    color: #4540df;
+    font-weight: 900;
+    font-size: 16px;
+}
+
+.fa-arrow{
+    color: black;
+}
+

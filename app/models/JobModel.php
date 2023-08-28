@@ -22,33 +22,47 @@ class JobModel {
 
 
     /**
-     * Récupère les offres d'emploi filtrées en fonction du filtre et de la pagination.
+     * Récupère les offres d'emploi filtrées en fonction des filtres de tri et de la pagination.
      *
      * @param int $pageDePagination  La position de départ des résultats à récupérer.
      * @param int $OffresParPage Le nombre d'articles par page.
+     * @param string $selectionTri Le nom de la colonne utilisée pour le tri.
+     * @param string $triDirection La direction du tri (ASC pour croissant, DESC pour décroissant).
      * @return array Les offres d'emploi filtrées.
      */
-    public function getSelectionEmploi($pageDePagination, $OffresParPage) :array {
+    public function getSelectionEmploi($pageDePagination, $OffresParPage, $selectionTri, $triDirection) : array {
         // Construire la requête SQL pour récupérer les offres d'emploi filtrées et paginées
-        $sql = $this->database->prepare('SELECT offres_emploi.*, 
+        $sql = 'SELECT offres_emploi.*, 
                          villes.nom AS ville_nom, 
                          metiers.nom AS metier_nom, 
                          contrats.nom AS contrat_nom
                   FROM offres_emploi 
                   INNER JOIN villes ON offres_emploi.ville_id = villes.id
                   INNER JOIN metiers ON offres_emploi.metier_id = metiers.id
-                  INNER JOIN contrats ON offres_emploi.contrat_id = contrats.id
-                  LIMIT :pageDePagination, :offresParPage
-                  ');
-    
-        // Securiser les paramètres
-        $sql->bindParam(':pageDePagination', $pageDePagination, \PDO::PARAM_INT);
-        $sql->bindParam(':offresParPage', $OffresParPage, \PDO::PARAM_INT);
+                  INNER JOIN contrats ON offres_emploi.contrat_id = contrats.id';
 
-        $sql->execute();
+                  // Ajouter la clause ORDER BY si un tri est spécifiée
+                  if (!empty($selectionTri)) {
+                    $sql .= ' ORDER BY ' . $selectionTri . ' ' . $triDirection;
+                  }
+
+                 // Ajouter la clause LIMIT pour la pagination
+                 $sql .= ' LIMIT :pageDePagination, :offresParPage';
+
+    
+        // Préparation de la requête SQL
+        $OffreEmplois = $this->database->prepare($sql);
+
+         // Sécurise et lie les paramètres
+        $OffreEmplois = $this->database->prepare($sql);
+        $OffreEmplois->bindParam(':pageDePagination', $pageDePagination, \PDO::PARAM_INT);
+        $OffreEmplois->bindParam(':offresParPage', $OffresParPage, \PDO::PARAM_INT);
+        
+        // Exécute la requête SQL
+        $OffreEmplois->execute();
 
         // Récupérer les offres d'emploi filtrées et paginées
-        $selectionEmploi = $sql->fetchAll(\PDO::FETCH_OBJ);
+        $selectionEmploi = $OffreEmplois->fetchAll(\PDO::FETCH_OBJ);
     
         // Renvoie les offres d'emploi filtrées en fonction des critères de recherche et de la pagination.
         return $selectionEmploi;
@@ -69,14 +83,6 @@ class JobModel {
     }
 
 
-// tri
-// if(isset($_GET['sort_price']) && $_GET['sort_price']!="") :
-//     if($_GET['sort_price']=='price-asc-rank') :
-//         $sql.=" ORDER BY price ASC";
-//     elseif($_GET['sort_price']=='price-desc-rank') :
-//         $sql.=" ORDER BY price DESC";
-//     endif;
-// endif;
     
 }
 

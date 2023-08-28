@@ -3,10 +3,12 @@
 
     <form method="GET" >
     <div class="box-content">
-        <div class="card-header">
-            <h5>Filter 
-                <button type="submit" class="btn btn-primary btn-sm float-end">Filtrer</button>
-            </h5>
+        <div class="card-header d-flex justify-content-between">
+            <h5>Filter</h5>
+            <div >
+                <a href="index.php" class="btn btn-secondary btn-sm "><i class="fa-solid fa-arrow-rotate-left"></i> Effacer</a>
+                <button type="submit" class="btn btn-primary btn-sm ">Filtrer</button>
+            </div>
         </div>
 
         <div class="box-header">
@@ -19,6 +21,7 @@
         <?php 
         $checked = isset($_GET['ville']) ? $_GET['ville'] : [];  // Vérifie si des villes ont été sélectionnées dans la requête GET
         foreach ($villes as $villeList)  :
+
         $isChecked = in_array($villeList->nom, $checked); ?>
             
         <div class="form-check mb-2">
@@ -27,7 +30,9 @@
             <label class="form-check-label" for="location"><?= $villeList->nom ?> </label>
         </div>
 
-        <?php endforeach; ?>
+        <?php 
+
+    endforeach; ?>
         </div>
     </div>
 
