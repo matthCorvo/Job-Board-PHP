@@ -1,10 +1,5 @@
 <?php
 
-namespace App\Config;
-
-use PDO;
-use PDOException;
-
 class Database {
 
     /**
@@ -12,7 +7,7 @@ class Database {
      *
      * @return \PDO|null Instance de la classe PDO - connexion à la base de données ou null en cas d'échec.
      */
-    public static function connect() {
+    public static function getConnexion() {
         try {
             // Configuration de la connexion à la base de données 
             $conn = new PDO("mysql:host=localhost;port=3306;dbname=job_board;charset=utf8", "SUBSKILL", "SUBSKILL");

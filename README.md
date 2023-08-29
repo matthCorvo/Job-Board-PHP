@@ -72,6 +72,7 @@ TABLE `offres_emploi` (
   `contrat_id` int(11) NOT NULL,
   `metier_id` int(11) NOT NULL,
   PRIMARY KEY (`id`),
+  UNIQUE KEY `reference` (`reference`),
   KEY `fk_ville_id` (`ville_id`),
   KEY `fk_contrat_id` (`contrat_id`),
   KEY `fk_metier_id` (`metier_id`)
@@ -364,8 +365,189 @@ Les filtres sont cumulables, et leur sélection est conservée lors du changemen
 
 
 
-### API pour les Images
+### API 
 Les logos des entreprises sont obtenus depuis une API externe (https://some-random-api.ml/meme) au format JSON.
 
+Création d'une API avec 3 routes permettant de modifier, ajouter et supprimer une offres d'emploi.
+
+## Utilisation
+
+Pour utiliser cette API, vous pouvez envoyer des requêtes HTTP aux contrôleurs :
+
+- Pour ajouter un nouvel emploi : `POST /api/controllers/ajouter.php`
+- Pour modifier un emploi existant : `PUT /api/controllers/modifier.php`
+- Pour supprimer un emploi : `DELETE /api/controllers/supprimer.php`
 
 
+- Exemple d'extrait de code : Models/ function ajouter()
+
+```
+public function ajouter()
+{
+    // Construction de la requête SQL pour l'ajout d'une offre d'emploi.
+    $sql = "INSERT INTO $this->table(reference, nom, description,
+    entreprise, ville_id, contrat_id, metier_id, date_publication) 
+    VALUES(:reference, :nom, :description, :entreprise, :ville_id, 
+    :contrat_id, :metier_id, :date_publication)";
+
+    // Préparation de la requête SQL.
+    $resultSql = $this->database->prepare($sql);
+
+    // Exécution de la requête SQL avec les valeurs spécifiées.
+    $result = $resultSql->execute([
+        ":reference"        => $this->reference,
+        ":nom"              => $this->nom,
+        ":description"      => $this->description,
+        ":entreprise"       => $this->entreprise,
+        ":ville_id"         => $this->ville_id,
+        ":contrat_id"       => $this->contrat_id,
+        ":metier_id"        => $this->metier_id,
+        ":date_publication" => $this->date_publication
+    ]);
+    
+    // Si l'ajout a réussi, retourne true, sinon false.
+    if ($result) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
+```
+
+- Exemple d'extrait de code : Controllers/ ajouter.php
+
+```
+if ($_SERVER['REQUEST_METHOD'] === "POST") { // si la méthode de la demande est POST.
+    // On instancie la base de données
+    $database = new Database();
+    $db = $database->getConnexion();
+
+    $job = new Job();
+
+    // Récupère les données JSON de la demande et les décode en un objet PHP.
+    $data = json_decode(file_get_contents("php://input"));
+    
+    // Vérifie si toutes les données requises sont présentes dans la demande.
+    if ( !empty($data->reference) && !empty($data->nom) 
+         && !empty($data->description) && !empty($data->entreprise) 
+         && !empty($data->ville_id) && !empty($data->contrat_id) 
+         && !empty($data->metier_id) && !empty($data->date_publication)) {
+
+        // On hydrate l'objet job avec les données de la demande
+        $job->reference        = htmlspecialchars($data->reference);
+        $job->nom              = htmlspecialchars($data->nom);
+        $job->description      = htmlspecialchars($data->description);
+        $job->entreprise       = htmlspecialchars($data->entreprise);
+        $job->ville_id         = htmlspecialchars($data->ville_id);
+        $job->contrat_id       = htmlspecialchars($data->contrat_id);
+        $job->metier_id        = htmlspecialchars($data->metier_id);
+        $job->date_publication = htmlspecialchars($data->date_publication);
+
+        $result = $job->ajouter();
+```
+<hr>
+
+
+- Exemple d'extrait de code : Models/ function modifier()
+
+```
+// Méthode pour modifier une offre d'emploi existante dans la base de données.
+public function modifier()
+{
+    // Construction de la requête SQL pour la modification d'une offre d'emploi.
+    $sql = "UPDATE $this->table SET 
+    reference=:reference, 
+    nom=:nom, 
+    description=:description, 
+    entreprise=:entreprise, 
+    ville_id=:ville_id, 
+    contrat_id=:contrat_id, 
+    metier_id=:metier_id, 
+    date_mise_a_jour=NOW() WHERE id=:id";
+
+    // Préparation de la réqête SQL
+    $resultSql = $this->database->prepare($sql);
+
+    // éxecution de la reqête
+    $result = $resultSql->execute([
+        ":reference"        => $this->reference,
+        ":nom"              => $this->nom,
+        ":description"      => $this->description,
+        ":entreprise"      => $this->entreprise,
+        ":ville_id"         => $this->ville_id,
+        ":contrat_id"       => $this->contrat_id,
+        ":metier_id"        => $this->metier_id,
+        ":id"               => $this->id
+
+```
+
+- Exemple d'extrait de code : Controllers/ modifier.php
+
+```
+if ($_SERVER['REQUEST_METHOD'] === "PUT") { // si la méthode de la demande est PUT.
+
+    $database = new Database();
+    $db = $database->getConnexion();
+
+    $job = new Job();
+
+    // Récupère les données JSON de la demande et les décode en un objet PHP.
+    $data = json_decode(file_get_contents("php://input"));
+
+    // Vérifie si toutes les données requises sont présentes dans la demande.
+    if ( !empty($data->id) && !empty($data->reference) && !empty($data->nom) 
+         && !empty($data->description) && !empty($data->entreprise) 
+         && !empty($data->ville_id) && !empty($data->contrat_id) 
+         && !empty($data->metier_id) ) {
+
+
+
+        // On hydrate l'objet job avec les données de la demande
+        $job->id               = intval($data->id);
+        $job->reference        = htmlspecialchars($data->reference);
+        $job->nom              = htmlspecialchars($data->nom);
+        $job->description      = htmlspecialchars($data->description);
+        $job->entreprise       = htmlspecialchars($data->entreprise);
+        $job->ville_id         = htmlspecialchars($data->ville_id);
+        $job->contrat_id       = htmlspecialchars($data->contrat_id);
+        $job->metier_id        = htmlspecialchars($data->metier_id);
+
+
+        $result = $job->modifier();
+```
+<hr>
+
+
+
+- Exemple d'extrait de code : Models/ function supprimer()
+
+```
+// Méthode pour supprimer une offre d'emploi de la base de données.
+public function supprimer()
+{
+    // Construction de la requête SQL pour la suppression d'une offre d'emploi.
+    $sql = "DELETE FROM $this->table WHERE id = :id";
+    $resultSql = $this->database->prepare($sql);
+
+    $result = $resultSql->execute(array(":id" => $this->id));
+
+```
+
+- Exemple d'extrait de code : Controllers/ supprimer.php
+
+```
+if ($_SERVER['REQUEST_METHOD'] === "DELETE") { // si la méthode de la demande est DELETE.
+    // On instancie la base de données
+    $database = new Database();
+    $db = $database->getConnexion();
+
+    $job = new Job();
+
+    // On récupère les infos envoyées
+    $data = json_decode(file_get_contents("php://input"));
+
+    if (!empty($data->id)) { // Vérifie si l'ID de l'offre d'emploi est présent dans les données de la demande.
+        $job->id = $data->id; // Assigne l'ID de l'offre d'emploi .
+
+```

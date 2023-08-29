@@ -1,10 +1,10 @@
 <?php
 
+use App\Models\Api;
 use App\Controller\JobController;
 use App\Lib\Utility;
-use App\Models\Api;
 use App\Models\FiltreModel;
-use App\Models\TriModel;
+use App\Router\Router;
 
 require_once 'vendor/autoload.php';
 require_once 'app/lib/debug.php';
@@ -36,7 +36,18 @@ $offres = $JobBoard['offres'];              // Les offres d'emploi de la page ac
 $totalPages = $JobBoard['totalPages'];      // Le nombre total de pages de pagination
 $pageActuelle = $JobBoard['pageActuelle'];  // La page actuelle
 $OffresParPage = $JobBoard['OffresParPage'];// Le nombre d'offres affichées par page
-d($pageActuelle);
+
+
+// $router = new Router();
+
+// $router->route('page(\d+)', function ($pageNumber) {
+//     // Your pagination route handling logic here
+// });
+
+// // Resolve the URL
+// $router->resolve($_SERVER['REQUEST_URI']);
+
+
 
 
 /**
