@@ -1,6 +1,13 @@
+<div id="" align="center">
 
 # JOB BOARD
+</div>
 
+<div id="" align="center">
+  <img src="screenshot.png" width="100%"/>
+</div>
+
+<br>
 
 Création d'un Job Board, permettant la consultation d'offres d'emploi avec des fonctionnalités de filtrage et de pagination créé avec MySQL et PHP. 
 
