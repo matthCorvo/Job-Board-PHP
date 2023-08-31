@@ -17,38 +17,39 @@ if ($_SERVER['REQUEST_METHOD'] === "PUT") { // si la méthode de la demande est 
     // Récupère les données JSON de la demande et les décode en un objet PHP.
     $data = json_decode(file_get_contents("php://input"));
 
-    // Vérifie si toutes les données requises sont présentes dans la demande.
-    if ( !empty($data->id) && !empty($data->reference) && !empty($data->nom) 
-         && !empty($data->description) && !empty($data->entreprise) 
-         && !empty($data->ville_id) && !empty($data->contrat_id) 
-         && !empty($data->metier_id) ) {
+    if ($data !== null && is_array($data)) {
+        foreach ($data as $jobData) {
+            // Vérifie si toutes les données requises sont présentes dans la demande.
+            if (!empty($jobData->id) && !empty($jobData->nom)
+                && !empty($jobData->description) && !empty($jobData->entreprise)
+                && !empty($jobData->ville_id) && !empty($jobData->contrat_id)
+                && !empty($jobData->metier_id)) {
 
+                // On hydrate l'objet job avec les données de la demande
+                $job->id               = intval($jobData->id);
+                $job->nom              = htmlspecialchars($jobData->nom);
+                $job->description      = htmlspecialchars($jobData->description);
+                $job->entreprise       = htmlspecialchars($jobData->entreprise);
+                $job->ville_id         = htmlspecialchars($jobData->ville_id);
+                $job->contrat_id       = htmlspecialchars($jobData->contrat_id);
+                $job->metier_id        = htmlspecialchars($jobData->metier_id);
 
+                $result = $job->modifier();
 
-        // On hydrate l'objet job avec les données de la demande
-        $job->id               = intval($data->id);
-        $job->reference        = htmlspecialchars($data->reference);
-        $job->nom              = htmlspecialchars($data->nom);
-        $job->description      = htmlspecialchars($data->description);
-        $job->entreprise       = htmlspecialchars($data->entreprise);
-        $job->ville_id         = htmlspecialchars($data->ville_id);
-        $job->contrat_id       = htmlspecialchars($data->contrat_id);
-        $job->metier_id        = htmlspecialchars($data->metier_id);
-
-
-        $result = $job->modifier();
-
-        if ($result) {
-            http_response_code(201);
-            echo json_encode(['message' => "Votre offre d'emploi a été modifié "]);
-        } else {
-            http_response_code(503);
-            echo json_encode(['message' => "La modification de l'offre d'emploi a échoué"]);
+                if ($result) {
+                    http_response_code(201);
+                    echo json_encode(['message' => "Votre offre d'emploi a été modifiée "]);
+                } else {
+                    http_response_code(503);
+                    echo json_encode(['message' => "La modification de l'offre d'emploi a échoué"]);
+                }
+            } else {
+                echo json_encode(['message' => "Les données ne sont pas complètes"]);
+            }
         }
     } else {
-        echo json_encode(['message' => "Les données ne sont pas complet"]);
+        http_response_code(405);
+        echo json_encode(['message' => "La méthode n'est pas autorisée"]);
     }
-} else {
-    http_response_code(405);
-    echo json_encode(['message' => "La méthode n'est pas autorisée"]);
 }
+?>

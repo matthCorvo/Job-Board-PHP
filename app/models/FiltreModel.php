@@ -27,7 +27,15 @@ class FiltreModel {
      */
     public function getFiltreMetiers() {
         // Exécute une requête pour récupérer les métiers distincts
-        $sql = $this->database->query('SELECT DISTINCT * FROM metiers');
+        $sql = $this->database->query(
+               'SELECT metiers.id AS metier_id, metiers.nom AS metier_nom, 
+                COUNT(offres_emploi.id) AS total
+                FROM metiers
+                LEFT JOIN offres_emploi ON metiers.id = offres_emploi.metier_id
+                GROUP BY metiers.id, metiers.nom
+                ORDER BY metiers.nom ASC');
+    
+
         $sql->execute();
         // Récupère les résultats sous forme d'objets
         $metiers = $sql->fetchAll(\PDO::FETCH_OBJ);
@@ -41,13 +49,24 @@ class FiltreModel {
      */
     public function getFiltreVilles() {
         // Exécute une requête pour récupérer les villes distinctes
-        $sql = $this->database->query('SELECT DISTINCT * FROM villes');
+        $sql = $this->database->query(
+        'SELECT villes.id AS ville_id, villes.nom AS ville_nom, 
+        COUNT(offres_emploi.id) AS total
+        FROM villes
+        LEFT JOIN offres_emploi ON villes.id = offres_emploi.ville_id
+        GROUP BY villes.id, villes.nom
+        ORDER BY villes.nom ASC');
+
         $sql->execute();
         // Récupère les résultats sous forme d'objets
         $villes = $sql->fetchAll(\PDO::FETCH_OBJ);
+        
         return $villes;
+
     }
 
+
+        
     /**
      * Récupère les contrats disponibles dans la base de données.
      *
@@ -55,12 +74,23 @@ class FiltreModel {
      */
     public function getFiltreContrats() {
         // Exécute une requête pour récupérer les contrats distincts
-        $sql = $this->database->query('SELECT DISTINCT * FROM contrats');
+        $sql = $this->database->query(
+            'SELECT contrats.id AS contrat_id, contrats.nom AS contrat_nom, 
+             COUNT(offres_emploi.id) AS total
+             FROM contrats
+             JOIN offres_emploi ON contrats.id = offres_emploi.contrat_id
+             GROUP BY contrats.id, contrats.nom
+             ORDER BY contrats.nom ASC');
+
         $sql->execute();
         // Récupère les résultats sous forme d'objets
         $contrats = $sql->fetchAll(\PDO::FETCH_OBJ);
         return $contrats;
+
     }
+    
+    
+    
 }
 
 ?>

@@ -37,6 +37,9 @@ public function readAll()
 // Méthode pour ajouter une nouvelle offre d'emploi dans la base de données.
 public function ajouter()
 {
+    // Génère une référence unique pour l'offre d'emploi.
+    $this->reference = 'REF_' . strtoupper(substr(uniqid(), -5));
+
     // Construction de la requête SQL pour l'ajout d'une offre d'emploi.
     $sql = "INSERT INTO $this->table(reference, nom, description,
     entreprise, ville_id, contrat_id, metier_id, date_publication) 
@@ -71,7 +74,6 @@ public function modifier()
 {
     // Construction de la requête SQL pour la modification d'une offre d'emploi.
     $sql = "UPDATE $this->table SET 
-    reference=:reference, 
     nom=:nom, 
     description=:description, 
     entreprise=:entreprise, 
@@ -85,7 +87,6 @@ public function modifier()
 
     // éxecution de la reqête
     $result = $resultSql->execute([
-        ":reference"        => $this->reference,
         ":nom"              => $this->nom,
         ":description"      => $this->description,
         ":entreprise"      => $this->entreprise,

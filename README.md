@@ -1,20 +1,18 @@
 
 # JOB BOARD
-# IMG JOBBOARD
 
 
-Création d'une page de Job Board, permettant la consultation d'offres d'emploi avec des fonctionnalités de filtrage et de pagination avec la base de données MySQL et le langage de programmation PHP. 
+Création d'un Job Board, permettant la consultation d'offres d'emploi avec des fonctionnalités de filtrage et de pagination créé avec MySQL et PHP. 
 
 # Table des matières
 
 1. [Installation](#installation)
 2. [Base de Données](#Base-de-Données)
 4. [Fonctionnalités](#fonctionnalités)
-   - [Affichage des Offres d'Emploi](#affichage-des-offres-demploi)
-   - [Filtres](#filtres)
-   - [Pagination](#pagination)
-   - [Tri](#tri)
-   - [API pour les Images](#api-pour-les-images)
+   - [Affichage des Offres d'Emploi](#Affichage-et-tri-des-Offres-d'Emploi)
+   - [Pagination](#Pagination)
+   - [Filtres](#Filtres)
+   - [API](#API)
 
 
 ## Prérequis
@@ -83,33 +81,23 @@ TABLE `offres_emploi` (
 
 ## Fonctionnalités
 
-### Affichage et tri des Offres d'Emploi 
+### Affichage des Offres d'Emploi 
 L'application affiche les offres d'emploi avec les détails suivants :
-- Date à laquelle l'offre a été publiée.
-- Date de mise à jour de l'offre .
-- Référence unique de l'offre d'emploi.
+- Date.
+- Référence unique.
 - Intitulé de l'offre.
 - Ville.
 - Type de contrat.
 - Type de métier.
 - Nom de l'entreprise qui poste l'annonce.
-- Description de l'offre (affichage des 30 premiers caractères seulement).
+- Description de l'offre.
 - tri des intitulé de l'offre et date pare ordre ascendant / descendant
 
 
-- Exemple d'extrait de code : function getSelectionEmploi
+*app/models/JobModel.php* 
+ 
 ```
-/**
-     * Récupère les offres d'emploi filtrées en fonction des filtres de tri et de la pagination.
-     *
-     * @param int $pageDePagination  La position de départ des résultats à récupérer.
-     * @param int $OffresParPage Le nombre d'articles par page.
-     * @param string $selectionTri Le nom de la colonne utilisée pour le tri.
-     * @param string $triDirection La direction du tri (ASC pour croissant, DESC pour décroissant).
-     * @return array Les offres d'emploi filtrées.
-     */
     public function getSelectionEmploi($pageDePagination, $OffresParPage, $selectionTri, $triDirection) : array {
-        // Construire la requête SQL pour récupérer les offres d'emploi filtrées et paginées
         $sql = 'SELECT offres_emploi.*, 
                          villes.nom AS ville_nom, 
                          metiers.nom AS metier_nom, 
@@ -119,15 +107,11 @@ L'application affiche les offres d'emploi avec les détails suivants :
                   INNER JOIN metiers ON offres_emploi.metier_id = metiers.id
                   INNER JOIN contrats ON offres_emploi.contrat_id = contrats.id';
 
-                  // Ajouter la clause ORDER BY si un tri est spécifiée
                   if (!empty($selectionTri)) {
-                    $sql .= ' ORDER BY ' . $selectionTri . ' ' . $triDirection;
-                  }
+                    $sql .= ' ORDER BY ' . $selectionTri . ' ' . $triDirection; }
 
-                 // Ajouter la clause LIMIT pour la pagination
                  $sql .= ' LIMIT :pageDePagination, :offresParPage';
 
-    
         // Préparation de la requête SQL
         $OffreEmplois = $this->database->prepare($sql);
 
@@ -140,183 +124,48 @@ L'application affiche les offres d'emploi avec les détails suivants :
     }
 ```
 
-- Exemple d'extrait de code : Template liste
-```
-  <?php 
-
-    //Récupération des filtres sélectionnés depuis la requête GET 
-    $selectionVilles = isset($_GET['ville']) ? $_GET['ville'] : []; 
-    // ...
-
-    foreach ($offres as $row): 
-
-      if (
-        // Vérifie si le tableau sélectionnées est vide OU si le nom de de l'offre est présent dans les sélectionnées.
-        (empty($selectionVilles) || in_array($row->ville_nom, $selectionVilles)) &&
-        // ...
-        ) : ?>
-          <a href="#"><?= $row->nom ?></a>
-          <span><?= $row->entreprise ?></span> <?= $Utility->formatDate  ($row->date_publication) ?>
-        <p><?=  substr($row->description, 0, 30) ?></p>
-          <li><i class="fa-solid fa-location-dot"></i> <?= $row->ville_nom ?></li>
-          <li><i class="fa-solid fa-tag"></i> <?= $row->metier_nom ?></li>
-          <li><i class="fa-solid fa-hashtag"></i> <?= $row->reference ?></li>
-          <p> <?= $row->contrat_nom ?></p> 
-           
-```
-
-- Exemple d'extrait de code : Template Tri
-```
-        <?php
-            // Capture les paramètres de requête GET
-            $getParams = $_GET;
-            $baseUrl = '';
-
-            // Defint les options de tri et leurs nom
-            $selectionTris = [
-              'date_desc' => 'Date (récentes)',
-              'date_asc'  => 'Date (anciennes)',
-              'name_asc'  => 'Nom (A à Z)',
-              'name_desc' => 'Nom (Z à A)',
-            ];
-
-            foreach ($selectionTris as $key => $label) :
-                // Détermine l'ordre de tri
-                // Si le paramètre 'order' est défini et égal à 'desc', l'ordre est défini sur 'asc', sinon sur 'desc'.
-                $order = isset($getParams['order']) && $getParams['order'] === 'desc' ? 'asc' : 'desc';
-    
-                // Si le paramètre 'tri' est défini dans la requête GET et qu'il correspond à la clé actuelle dans $selectionTris, alors le lien est désactivé.
-                $isActive = isset($getParams['tri']) && $getParams['tri'] === $key;
-
-            ?>
-
-                <li>
-                    <a class="dropdown-item <?= $isActive ? 'bg-danger text-white disabled ' : '' ?>" href="<?= $baseUrl . '?' . http_build_query(array_merge($getParams, ['tri' => $key, 'order' => $order])); ?>">
-                        <?= $label ?>
-                    </a>
-                </li>
-
-            <?php endforeach; ?>
-           
-```
-
 
 ### Pagination
 La liste des offres d'emploi est paginée, avec 10 offres par page. Le nombre de pages varie en fonction du nombre d'offres en base de données.
 
-- Exemple d'extrait de code : function getTotalOffres
+
+
+*app/controllers/JobController.php* 
+
 ```
-/**
-     * Récupère le nombre total d'offres d'emploi dans la base de données.
-     *
-     * @return int Le nombre total d'offres d'emploi.
-     */
-    public function getTotalOffres() : int{
-        // Construire la requête SQL pour compter le nombre total d'offres d'emploi
-        $sql = $this->database->query('SELECT COUNT(*) as total FROM offres_emploi');
-        $result = $sql->fetch(\PDO::FETCH_OBJ);
+    // Calcul du nombre total d'offres d'emploi sélectionnées
+        $totalOffresSelection = $this->offresEmplois->getTotalJobCountChecked($selectedMetier ,$selectedContrat,$selectedVille); // Get the total count of job offers
         
-        // Retourner le nombre total d'offres d'emploi
-        return (int)$result->total;
-    }
-```
-
-- Exemple d'extrait de code : function getOffresAvecPagination
-```
-    /**
-     * Récupère les offres d'emploi avec pagination et tri.
-     *
-     * Cette function récupère les offres d'emploi avec pagination en fonction de la page actuelle,
-     * du nombre d'éléments par page, du tri et de la direction de tri.
-     *
-     * @return array  tableau contenant les offres d'emploi, le nombre total de pages, la page actuelle et le nombre d'éléments par page.
-     *             
-     */
-    public function getOffresAvecPagination() : array {
-        $OffresParPage = 10; // Nombre d'éléments par page
+        // Récupération du nombre total d'offres d'emploi
+        $totalOffresCount = $this->offresEmplois->getTotalOffres(); 
         
-        // Définit la page actuelle
-        $pageActuelle = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+        // Nombre d'offres par page par défaut
+        $OffresParPage = 10;
 
-       
-        $selectionTri = 'date_publication'; // Colonne de tri par défaut
-        $triDirection = 'DESC'; // Direction de tri par défaut
+        // Si des filtres sont appliqués, ajuste le nombre d'offres par page en conséquence
+        if (!empty($selectedMetier) || !empty($selectedContrat) || !empty($selectedVille)) {
+            $OffresParPage = ($totalOffresCount - $totalOffresSelection );
+        } 
 
-        // Définir les colonnes de tri et leurs correspondances avec les champs de la base de données
-        $selectionTris = [
-            'date_desc' => 'date_publication',
-            'date_asc' => 'date_publication',
-            'name_asc' => 'nom',
-            'name_desc' => 'nom',
-        ];
+        // Détermine la page actuelle
+        // Si 'page' est défini et n'est pas vide, alors il contient le numéro de la page souhaitée.
+        if (isset($_GET["page"])) { $pageActuelle = $_GET["page"]; 
+        } else { $pageActuelle = 1; }
+        
+        // Calcule l'index de la première offre à afficher pour la page actuelle
+        $pageDePagination = ($pageActuelle - 1) * $OffresParPage;
 
-        // si le paramètre 'tri' est défini dans la requête GET et s'il correspond à une option de tri valide.
-        if (isset($_GET['tri']) && isset($selectionTris[$_GET['tri']])) {
-            // mise à jour de l'option de tri utiliser.
-            $selectionTri = $selectionTris[$_GET['tri']];
+        // Récupère les données des offres d'emploi pour la page actuelle
+        $offres = $this->offresEmplois->getSelectionEmploi(
+            $pageDePagination,
+            $OffresParPage,
+            $selectionTri,
+            $triDirection,
+            $totalOffresSelection );
+            
+        // Calcule le nombre total de pages nécessaires pour afficher toutes les offres
+        $totalPages = ceil($totalOffresCount / $OffresParPage);
 
-            // si le paramètre 'order' est défini dans la requête GET et s'il est défini sur tri ascendant.
-            if (isset($_GET['order']) && $_GET['order'] === 'asc') {
-                // mise à jour de la direction de tri pour qu'elle soit (ascendant).
-                $triDirection = 'ASC';
-            }
-          
-        }
-
-        // Calcule le nombre total de pages
-        $totalOffres = $this->offresEmplois->getTotalOffres();
-
-        // Calcule la page de la pagination en fonction de la page actuelle et du nombre d'éléments par page
-        $pageDePagination  = ($pageActuelle - 1) * $OffresParPage;
-
-        // Récupère les données pour la page actuelle
-        $offres = $this->offresEmplois->getSelectionEmploi($pageDePagination, $OffresParPage, $selectionTri, $triDirection);
-
-        // Calcule le nombre total de pages
-        $totalPages = ceil($totalOffres / $OffresParPage);
-
-        // Retourne les résultats sous forme de tableau
-        return [
-            'offres' => $offres,
-            'totalPages' => $totalPages,
-            'pageActuelle' => $pageActuelle,
-            'OffresParPage' => $OffresParPage,
-        ];
-    }
-```
-
-- Exemple d'extrait de code : Template pagination
-```
-      <?php
-      // Capture le paramètres de requête GET
-      $getParams = $_GET;
-      unset($getParams['page']); // Supprime le paramètre "page" existant s'il existe déja
-   
-      if ($pageActuelle > 1) : ?>
-
-      <li class="page-item">
-            <a class="page-link" href="<?= 'index.php?page=' . ($pageActuelle - 1) . '&' . http_build_query($getParams); ?>">&lt;</a>
-      </li>
-      <?php endif; ?>
-
-      <?php for ($i = 1; $i <= $totalPages; $i++) :
-      if ($i === $pageActuelle) : ?>
-            <li class="page-item active">
-               <span class="page-link"><?= $i; ?></span>
-            </li>
-      <?php else : ?>
-            <li class="page-item">
-               <a class="page-link" href="<?= 'index.php?page=' . $i . '&' . http_build_query($getParams); ?>"><?= $i; ?></a>
-            </li>
-      <?php endif; ?>
-      <?php endfor; ?>
-
-      <?php
-      if ($pageActuelle < $totalPages) : ?>
-         <li class="page-item">
-         <a class="page-link" href="<?= 'index.php?page=' . ($pageActuelle + 1) . '&' . http_build_query($getParams); ?>">&gt;</a>
-         </li>
-      <?php endif; ?>
 ```
 
 
@@ -328,62 +177,144 @@ Les utilisateurs peuvent filtrer les offres d'emploi par les critères suivants 
 
 Les filtres sont cumulables, et leur sélection est conservée lors du changement de page.
 
-- Exemple d'extrait de code : function getFiltreVilles, function getFiltreMetier, function getFiltreContrat
+Exemple  : 
+*app/models/FiltreModel.php* 
 ```  
-  /**
-     * Récupère les villes disponibles dans la base de données.
-     *
-     * @return array Un tableau contenant les villes disponibles.
-     */
-    public function getFiltreVilles() {
+ public function getFiltreVilles() {
         // Exécute une requête pour récupérer les villes distinctes
-        $sql = $this->database->query('SELECT DISTINCT * FROM villes');
+        $sql = $this->database->query(
+        'SELECT villes.id AS ville_id, villes.nom AS ville_nom, 
+        COUNT(offres_emploi.id) AS total
+        FROM villes
+        LEFT JOIN offres_emploi ON villes.id = offres_emploi.ville_id
+        GROUP BY villes.id, villes.nom
+        ORDER BY villes.nom ASC');
+
         $sql->execute();
         // Récupère les résultats sous forme d'objets
         $villes = $sql->fetchAll(\PDO::FETCH_OBJ);
+        
         return $villes;
-    }
 
 ```
+Exemple  : 
+*app/models/JobModel.php* 
+```  
+ $sql = 'SELECT COUNT(*) as total FROM offres_emploi
+        JOIN metiers ON metiers.id = offres_emploi.metier_id
+        JOIN contrats ON contrats.id = offres_emploi.contrat_id
+        JOIN villes ON villes.id = offres_emploi.ville_id';
 
-- Exemple d'extrait de code : Template filtre
-``` 
-  <?php 
-        $checked = isset($_GET['ville']) ? $_GET['ville'] : [];  // Vérifie si des villes ont été sélectionnées dans la requête GET
-        foreach ($villes as $villeList)  :
-        $isChecked = in_array($villeList->nom, $checked); ?>
-            
-            <input class="form-check-input" type="checkbox" value='<?= $villeList->nom ?>' id="<?= $villeList->id ?>" name="ville[]" 
-            <?= $isChecked ? 'checked' : '' ;?>>
-            <label class="form-check-label" for="location"><?= $villeList->nom ?> </label>
-        </div>
-        <?php endforeach; ?>
+        // Tableau pour stocker les conditions de filtre
+        $whereClause = [];
+
+        // Condition de filtre pour les types de contrat sélectionnés
+        if (!empty($selectedMetier)) {
+            $whereClause[] = 'metiers.nom IN (' . implode(',', array_fill(0, count($selectedMetier), '?')) . ')';
+        }
+
+        // ......
+
+        // Si des conditions de filtre existent, les ajouter à la requête SQL
+        if (!empty($whereClause)) {
+            $sql .= ' WHERE ' . implode(' AND ', $whereClause);
+        }
+        
+        $stmt = $this->database->prepare($sql);
+        
+        // Préparation des valeurs à lier aux placeholders dans la requête SQL
+        $paramCounter = 1;
+
+        // Si des filtres ont été appliqués pour les métiers sélectionnés
+        if (!empty($selectedMetier)) {
+            // Boucle à travers chaque métier sélectionné
+            foreach ($selectedMetier as $metier) {
+                // Lie la valeur du métier actuel au paramètre correspondant dans la requête SQL
+                $stmt->bindValue($paramCounter++, $metier);
+            }
+        }
+
+       // ......
 ```
-
-### Router
-
-
 
 
 ### API 
+### image<br>
 Les logos des entreprises sont obtenus depuis une API externe (https://some-random-api.ml/meme) au format JSON.
 
+*app/models/ImgAPi.php*
+```
+    public function getImageUrlFromAPI() : string {
+      
+        // Envoie une requête à l'API
+        $apiUrl = file_get_contents('https://some-random-api.com/img/bird');
+      
+        // Analyse la réponse JSON
+        $data = json_decode($apiUrl);
+        
+        // Récupére l'URL de l'image
+        return $data->link;
+    }
+```
+## RESTful APIs
 Création d'une API avec 3 routes permettant de modifier, ajouter et supprimer une offres d'emploi.
-
-## Utilisation
 
 Pour utiliser cette API, vous pouvez envoyer des requêtes HTTP aux contrôleurs :
 
-- Pour ajouter un nouvel emploi : `POST /api/controllers/ajouter.php`
-- Pour modifier un emploi existant : `PUT /api/controllers/modifier.php`
-- Pour supprimer un emploi : `DELETE /api/controllers/supprimer.php`
+- Pour ajouter un nouvel emploi : `(POST) /api/controllers/ajouter.php`
+<br>
+*test*
+```
+[
+  {
+    "nom": "Test",
+    "description": "Test",
+    "entreprise": "Test",
+    "ville_id": 1,
+    "contrat_id": 2,
+    "metier_id": 1,
+    "date_publication": "2023-07-30",
+    "reference": "R" <!--La suite de la référence sera générée automatiquement.  -->
+  }
+]
+```
+- Pour modifier un emploi existant : `(PUT) /api/controllers/modifier.php`
+<br>
+*test*
+```
+[
+   {
+        "id":5,
+        "nom": "Test",
+        "description": "Test",
+        "entreprise": "Test ",
+        "ville_id": 1,
+        "contrat_id": 1,
+        "metier_id": 5
+        <!-- insertion automatique de la Date : mise a jour.  -->
+  }
+]
+```
+- Pour supprimer un emploi : `(DELETE) /api/controllers/supprimer.php`
+<br>
+*test*
+```
+[
+  {
+        "id":5,
+  }
+]
+```
 
-
-- Exemple d'extrait de code : Models/ function ajouter()
+<hr>
+*api/models/JobApi.php*
 
 ```
 public function ajouter()
 {
+     // Génère une référence unique pour l'offre d'emploi.
+    $this->reference = 'REF_' . strtoupper(substr(uniqid(), -5));
+
     // Construction de la requête SQL pour l'ajout d'une offre d'emploi.
     $sql = "INSERT INTO $this->table(reference, nom, description,
     entreprise, ville_id, contrat_id, metier_id, date_publication) 
@@ -415,7 +346,7 @@ public function ajouter()
 
 ```
 
-- Exemple d'extrait de code : Controllers/ ajouter.php
+*api/controllers/ajouter.php*
 
 ```
 if ($_SERVER['REQUEST_METHOD'] === "POST") { // si la méthode de la demande est POST.
@@ -423,33 +354,32 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") { // si la méthode de la demande est
     $database = new Database();
     $db = $database->getConnexion();
 
-    $job = new Job();
+    $job = new JobApi();
 
     // Récupère les données JSON de la demande et les décode en un objet PHP.
     $data = json_decode(file_get_contents("php://input"));
     
     // Vérifie si toutes les données requises sont présentes dans la demande.
-    if ( !empty($data->reference) && !empty($data->nom) 
-         && !empty($data->description) && !empty($data->entreprise) 
-         && !empty($data->ville_id) && !empty($data->contrat_id) 
-         && !empty($data->metier_id) && !empty($data->date_publication)) {
+    if ($data !== null && is_array($data) ) {
+        foreach ($data as $jobData) {
+            // On hydrate l'objet job avec les données de la demande
+            $job->reference        = htmlspecialchars($jobData->reference);
+            $job->nom              = htmlspecialchars($jobData->nom);
+            $job->description      = htmlspecialchars($jobData->description);
+            $job->entreprise       = htmlspecialchars($jobData->entreprise);
+            $job->ville_id         = htmlspecialchars($jobData->ville_id);
+            $job->contrat_id       = htmlspecialchars($jobData->contrat_id);
+            $job->metier_id        = htmlspecialchars($jobData->metier_id);
+            $job->date_publication = htmlspecialchars($jobData->date_publication);
 
-        // On hydrate l'objet job avec les données de la demande
-        $job->reference        = htmlspecialchars($data->reference);
-        $job->nom              = htmlspecialchars($data->nom);
-        $job->description      = htmlspecialchars($data->description);
-        $job->entreprise       = htmlspecialchars($data->entreprise);
-        $job->ville_id         = htmlspecialchars($data->ville_id);
-        $job->contrat_id       = htmlspecialchars($data->contrat_id);
-        $job->metier_id        = htmlspecialchars($data->metier_id);
-        $job->date_publication = htmlspecialchars($data->date_publication);
-
-        $result = $job->ajouter();
+            $result = $job->ajouter();
+        }
 ```
+
 <hr>
 
 
-- Exemple d'extrait de code : Models/ function modifier()
+*api/models/JobApi.php*
 
 ```
 // Méthode pour modifier une offre d'emploi existante dans la base de données.
@@ -482,48 +412,40 @@ public function modifier()
 
 ```
 
-- Exemple d'extrait de code : Controllers/ modifier.php
+*api/controllers/modifier.php*
 
 ```
-if ($_SERVER['REQUEST_METHOD'] === "PUT") { // si la méthode de la demande est PUT.
-
-    $database = new Database();
-    $db = $database->getConnexion();
-
-    $job = new Job();
-
     // Récupère les données JSON de la demande et les décode en un objet PHP.
     $data = json_decode(file_get_contents("php://input"));
 
-    // Vérifie si toutes les données requises sont présentes dans la demande.
-    if ( !empty($data->id) && !empty($data->reference) && !empty($data->nom) 
-         && !empty($data->description) && !empty($data->entreprise) 
-         && !empty($data->ville_id) && !empty($data->contrat_id) 
-         && !empty($data->metier_id) ) {
+    if ($data !== null && is_array($data)) {
+        foreach ($data as $jobData) {
+            // Vérifie si toutes les données requises sont présentes dans la demande.
+            if (!empty($jobData->id) && !empty($jobData->nom)
+                && !empty($jobData->description) && !empty($jobData->entreprise)
+                && !empty($jobData->ville_id) && !empty($jobData->contrat_id)
+                && !empty($jobData->metier_id)) {
 
+                // On hydrate l'objet job avec les données de la demande
+                $job->id               = intval($jobData->id);
+                $job->nom              = htmlspecialchars($jobData->nom);
+                $job->description      = htmlspecialchars($jobData->description);
+                $job->entreprise       = htmlspecialchars($jobData->entreprise);
+                $job->ville_id         = htmlspecialchars($jobData->ville_id);
+                $job->contrat_id       = htmlspecialchars($jobData->contrat_id);
+                $job->metier_id        = htmlspecialchars($jobData->metier_id);
 
+                $result = $job->modifier();
 
-        // On hydrate l'objet job avec les données de la demande
-        $job->id               = intval($data->id);
-        $job->reference        = htmlspecialchars($data->reference);
-        $job->nom              = htmlspecialchars($data->nom);
-        $job->description      = htmlspecialchars($data->description);
-        $job->entreprise       = htmlspecialchars($data->entreprise);
-        $job->ville_id         = htmlspecialchars($data->ville_id);
-        $job->contrat_id       = htmlspecialchars($data->contrat_id);
-        $job->metier_id        = htmlspecialchars($data->metier_id);
-
-
-        $result = $job->modifier();
 ```
 <hr>
 
 
 
-- Exemple d'extrait de code : Models/ function supprimer()
+*api/models/JobApi.php*
 
 ```
-// Méthode pour supprimer une offre d'emploi de la base de données.
+
 public function supprimer()
 {
     // Construction de la requête SQL pour la suppression d'une offre d'emploi.
@@ -534,7 +456,7 @@ public function supprimer()
 
 ```
 
-- Exemple d'extrait de code : Controllers/ supprimer.php
+*api/controllers/supprimer.php*
 
 ```
 if ($_SERVER['REQUEST_METHOD'] === "DELETE") { // si la méthode de la demande est DELETE.

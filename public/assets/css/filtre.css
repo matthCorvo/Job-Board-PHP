@@ -36,7 +36,12 @@
     padding-right: 5px;
     font-weight: normal;
     font-size: 15px;
-    color: #4540df;
+    color: #F11D58;
 }
 
 
+.card-header button {
+    background-color:#F11D58;
+    color: white;
+    
+}

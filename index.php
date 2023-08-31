@@ -1,9 +1,10 @@
 <?php
 
-use App\Models\Api;
+use App\Models\ImgApi;
 use App\Controller\JobController;
 use App\Lib\Utility;
 use App\Models\FiltreModel;
+use App\Models\JobModel;
 use App\Router\Router;
 
 require_once 'vendor/autoload.php';
@@ -23,6 +24,9 @@ $villes = $filtre->getFiltreVilles();
 $contrats = $filtre->getFiltreContrats();
 
 
+
+
+
 /**
  * 
  * Affichage des offres d'emploi avec gestion de la pagination.
@@ -33,20 +37,10 @@ $JobController = new JobController();
 $JobBoard = $JobController->getOffresAvecPagination();
 // Récupération des données nécessaires
 $offres = $JobBoard['offres'];              // Les offres d'emploi de la page actuelle
-$totalPages = $JobBoard['totalPages'];      // Le nombre total de pages de pagination
-$pageActuelle = $JobBoard['pageActuelle'];  // La page actuelle
+ $totalPages = $JobBoard['totalPages'];      // Le nombre total de pages de pagination
+ $pageActuelle = $JobBoard['pageActuelle'];  // La page actuelle
 $OffresParPage = $JobBoard['OffresParPage'];// Le nombre d'offres affichées par page
-
-
-// $router = new Router();
-
-// $router->route('page(\d+)', function ($pageNumber) {
-//     // Your pagination route handling logic here
-// });
-
-// // Resolve the URL
-// $router->resolve($_SERVER['REQUEST_URI']);
-
+$totalOffresSelection = $JobBoard['totalOffresSelection'];// Le nombre d'offres affichées par page
 
 
 
@@ -57,7 +51,7 @@ $OffresParPage = $JobBoard['OffresParPage'];// Le nombre d'offres affichées par
  * Récupération des logos d'entreprise depuis une API externe.
  */
 $Utility = new Utility(); // Initialisation de l'utilitaire de formatage de date en français
-$Api = new Api(); // Initialisation de la récupération des logos d'entreprise depuis une API externe
+$Api = new ImgApi(); // Initialisation de la récupération des logos d'entreprise depuis une API externe
 
 
 include_once 'template/index.php';

@@ -2,13 +2,11 @@
 
 namespace App\Models;
 
-class Api {
+class ImgApi {
 
     /**
      * Obtient une URL d'image depuis une API externe.
      *
-     * Cette fonction envoie une requête à une API externe pour récupérer une URL d'image.
-     * Ensuite, elle analyse la réponse JSON pour extraire l'URL de l'image.
      *
      * @return string L'URL de l'image récupérée.
      */

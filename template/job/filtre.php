@@ -3,11 +3,11 @@
 
     <form method="GET" >
     <div class="box-content">
-        <div class="card-header d-flex justify-content-between">
-            <h5>Filter</h5>
+        <div class="card-header d-flex justify-content-between mb-5">
+            <h5>Filtre</h5>
             <div >
                 <a href="index.php" class="btn btn-secondary btn-sm "><i class="fa-solid fa-arrow-rotate-left"></i> Effacer</a>
-                <button type="submit" class="btn btn-primary btn-sm ">Filtrer</button>
+                <button type="submit"  class="btn btn-sm ">Filtre</button>
             </div>
         </div>
 
@@ -22,12 +22,12 @@
         $checked = isset($_GET['ville']) ? $_GET['ville'] : [];  // Vérifie si des villes ont été sélectionnées dans la requête GET
         foreach ($villes as $villeList)  :
 
-        $isChecked = in_array($villeList->nom, $checked); ?>
+        $isChecked = in_array($villeList->ville_nom, $checked); ?>
             
         <div class="form-check mb-2">
-            <input class="form-check-input" type="checkbox" value='<?= $villeList->nom ?>' id="<?= $villeList->id ?>" name="ville[]" 
-            <?= $isChecked ? 'checked' : '' ;?>>
-            <label class="form-check-label" for="location"><?= $villeList->nom ?> </label>
+            <input class="form-check-input" type="checkbox" value='<?= $villeList->ville_nom ?>' id="<?= $villeList->ville_id ?>" name="ville[]" 
+            <?= $isChecked ? 'checked' : '' ;?> />
+            <label class="form-check-label" for="location"><?= $villeList->ville_nom ?> (<?= $villeList->total?>) </label>
         </div>
 
         <?php 
@@ -46,12 +46,12 @@
         <?php 
         $checked = isset($_GET['metier']) ? $_GET['metier'] : []; // Vérifie si des metier ont été sélectionnées dans la requête GET
         foreach ($metiers as $metierList)  :
-        $isChecked = in_array($metierList->nom, $checked); ?>
+        $isChecked = in_array($metierList->metier_nom, $checked); ?>
 
         <div class="form-check mb-2">
-            <input class="form-check-input" type="checkbox" value='<?= $metierList->nom ?>' id="<?= $metierList->id ?>" name="metier[]" 
+            <input class="form-check-input" type="checkbox" value='<?= $metierList->metier_nom ?>' id="<?= $metierList->metier_id ?>" name="metier[]" 
             <?= $isChecked ? 'checked' : '' ;?>>
-            <label class="form-check-label" for="location"><?= $metierList->nom ?> </label>
+            <label class="form-check-label" for="location"><?= $metierList->metier_nom ?>  (<?= $metierList->total?>)</label>
         </div>
 
         <?php endforeach; ?>
@@ -68,12 +68,12 @@
         <?php 
         $checked = isset($_GET['contrat']) ? $_GET['contrat'] : []; // Vérifie si des contrat ont été sélectionnées dans la requête GET
         foreach ($contrats as $contratList)  :
-        $isChecked = in_array($contratList->nom, $checked); ?>
+        $isChecked = in_array($contratList->contrat_nom, $checked); ?>
 
         <div class="form-check mb-2">
-            <input class="form-check-input" type="checkbox" value='<?= $contratList->nom ?>' id="<?= $contratList->id ?>" name="contrat[]" 
+            <input class="form-check-input" type="checkbox" value='<?= $contratList->contrat_nom ?>' id="<?= $contratList->contrat_id ?>" name="contrat[]" 
             <?= $isChecked ? 'checked' : '' ;?>>
-            <label class="form-check-label" for="location"><?= $contratList->nom ?> </label>
+            <label class="form-check-label" for="location"><?= $contratList->contrat_nom ?> (<?= $contratList->total ?>)</label>
         </div>
 
         <?php endforeach; ?>

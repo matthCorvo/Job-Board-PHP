@@ -50,7 +50,7 @@
 
 .block-job-name span{
     display: inline-block;
-    color: #4540df;
+    color: #F11D58;
     font-weight: 700;
     position: relative;
     margin-right: 20px;
@@ -72,13 +72,13 @@
 }
 
 .block-job-info  li i {
-    color: #4540df;
+    color: #F11D58;
     margin-right: 5px;
     font-size: 16px;
 }
 
 .block-job-contrat {
-    color: #4540df;
+    color: #F11D58;
     font-weight: 900;
     font-size: 16px;
 }
@@ -87,3 +87,9 @@
     color: black;
 }
 
+
+.pagination .active>.page-link{
+        background-color:#F11D58;
+        color: white;
+        border: transparent;
+    }

@@ -4,7 +4,6 @@
 
   <div class="col-auto"> <!-- Tri -->
   <?php require_once 'tri.php'; ?>
-
   </div>
 
   </div> <!--  !Header -->
@@ -14,21 +13,19 @@
   <?php 
 
     // Récupération des filtres sélectionnés depuis la requête GET
-    $selectionVilles = isset($_GET['ville']) ? $_GET['ville'] : []; 
-    $selectionMetiers = isset($_GET['metier']) ? $_GET['metier'] : [];
-    $selectionContrats = isset($_GET['contrat']) ? $_GET['contrat'] : [];
+    $selectedVilles = isset($_GET['ville']) ? $_GET['ville'] : []; 
+    $selectedMetiers = isset($_GET['metier']) ? $_GET['metier'] : [];
+    $selectedContrats = isset($_GET['contrat']) ? $_GET['contrat'] : [];
     $MsgAucuneOffre = true;  // Affiche "Aucune offre" n'est affiché sie [] vide
-    $totalCountSelection = 0; 
+    
     foreach ($offres as $row): 
-
       if (
         // Vérifie si le tableau sélectionnées est vide OU si le nom de de l'offre est présent dans les sélectionnées.
-        (empty($selectionVilles) || in_array($row->ville_nom, $selectionVilles)) &&
-        (empty($selectionMetiers) || in_array($row->metier_nom, $selectionMetiers)) &&
-        (empty($selectionContrats) || in_array($row->contrat_nom, $selectionContrats)) 
+        (empty($selectedVilles) || in_array($row->ville_nom, $selectedVilles)) &&
+        (empty($selectedMetiers) || in_array($row->metier_nom, $selectedMetiers)) &&
+        (empty($selectedContrats) || in_array($row->contrat_nom, $selectedContrats)) 
         ) :
         $MsgAucuneOffre = false; // $MsgAucuneOffre désactivé, car une offre correspond aux filtres.
-        $totalCountSelection++; // Incrémente le compteur des tableau sélectionnées
   ?>
       
   <div class="job-listing-block">
@@ -75,10 +72,14 @@
             <p>Nous n'avons trouvé aucune offre d'emploi correspondant à votre recherche.</p>
         </div>
     </div>
+
    <?php endif; ?>
+
   </div><!-- Fin de la colonne principale -->
-  
-    <?php require_once 'pagination.php'; ?>
+
+    <div class="<?= $totalOffresSelection <= 10  ? 'd-none' : ''?>"> <!--Pagination -->
+       <?php  require_once 'pagination.php'; ?>
+    </div>
 
 
 
