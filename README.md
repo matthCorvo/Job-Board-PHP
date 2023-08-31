@@ -258,6 +258,12 @@ Les logos des entreprises sont obtenus depuis une API externe (https://some-rand
 ```
 ## RESTful APIs
 Création d'une API avec 3 routes permettant de modifier, ajouter et supprimer une offres d'emploi.
+Vous pouvez aussi retrouver et tester directement ses routes en lignes :
+- READ : http://jobboard.alwaysdata.net/api/controllers/lecture.php
+- ADD : http://jobboard.alwaysdata.net/api/controllers/ajouter.php
+- UPDATE : http://localhost/projet/subskill/php-Job-Board/api/controllers/modifier.php
+- DELETE : http://localhost/projet/subskill/php-Job-Board/api/controllers/supprimer.php
+
 
 Pour utiliser cette API, vous pouvez envoyer des requêtes HTTP aux contrôleurs :
 
