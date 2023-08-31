@@ -261,9 +261,11 @@ Création d'une API avec 3 routes permettant de modifier, ajouter et supprimer u
 
 Pour utiliser cette API, vous pouvez envoyer des requêtes HTTP aux contrôleurs :
 
+
 - Pour ajouter un nouvel emploi : `(POST) /api/controllers/ajouter.php`
 <br>
 *test*
+
 ```
 [
   {
@@ -278,35 +280,10 @@ Pour utiliser cette API, vous pouvez envoyer des requêtes HTTP aux contrôleurs
   }
 ]
 ```
-- Pour modifier un emploi existant : `(PUT) /api/controllers/modifier.php`
-<br>
-*test*
-```
-[
-   {
-        "id":5,
-        "nom": "Test",
-        "description": "Test",
-        "entreprise": "Test ",
-        "ville_id": 1,
-        "contrat_id": 1,
-        "metier_id": 5
-        <!-- insertion automatique de la Date : mise a jour.  -->
-  }
-]
-```
-- Pour supprimer un emploi : `(DELETE) /api/controllers/supprimer.php`
-<br>
-*test*
-```
-[
-  {
-        "id":5,
-  }
-]
-```
 
 <hr>
+
+
 *api/models/JobApi.php*
 
 ```
@@ -379,6 +356,27 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") { // si la méthode de la demande est
 <hr>
 
 
+- Pour modifier un emploi existant : `(PUT) /api/controllers/modifier.php`
+<br>
+*test*
+
+```
+[
+   {
+        "id":5,
+        "nom": "Test",
+        "description": "Test",
+        "entreprise": "Test ",
+        "ville_id": 1,
+        "contrat_id": 1,
+        "metier_id": 5
+        <!-- insertion automatique de la Date : mise a jour.  -->
+  }
+]
+```
+<hr>
+
+
 *api/models/JobApi.php*
 
 ```
@@ -437,6 +435,22 @@ public function modifier()
 
                 $result = $job->modifier();
 
+```
+
+
+<hr>
+
+
+- Pour supprimer un emploi : `(DELETE) /api/controllers/supprimer.php`
+<br>
+*test*
+
+```
+[
+  {
+        "id":5,
+  }
+]
 ```
 <hr>
 
