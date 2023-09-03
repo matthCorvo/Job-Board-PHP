@@ -4,8 +4,7 @@ use App\Models\ImgApi;
 use App\Controller\JobController;
 use App\Lib\Utility;
 use App\Models\FiltreModel;
-use App\Models\JobModel;
-use App\Router\Router;
+
 
 require_once 'vendor/autoload.php';
 require_once 'app/lib/debug.php';
