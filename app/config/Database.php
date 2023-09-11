@@ -15,7 +15,7 @@ class Database {
     public static function connect() {
         try {
             // Configuration de la connexion à la base de données 
-            $conn = new PDO("mysql:host=localhost;port=3306;dbname=job_board;charset=utf8", "SUBSKILL", "SUBSKILL");
+            $conn = new PDO("mysql:host=localhost;port=3306;dbname=;charset=utf8", "", "");
 
             // Configure PDO to throw exceptions on error
             $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
